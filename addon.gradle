@@ -22,9 +22,9 @@ artifacts {
 // This block configures any maven publications you want to make.
 publishing {
     publications {
-        create('tbc', MavenPublication) {
+        mavenJava(MavenPublication) {
             // Add any other artifacts here that you would like to publish!
-            artifact jar
+//            artifact jar TODO: ここコメントアウトするとパブリッシュできない
             artifact _sourcesJar
             artifact devJar
         }
