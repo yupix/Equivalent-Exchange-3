@@ -1,19 +1,19 @@
 package com.pahimar.ee3.reference;
 
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-
 import java.io.File;
 
-public class Files
-{
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+
+public class Files {
+
     public static final String PRE_CALCULATION_ENERGY_VALUES = "pre-calculation-energy-values.json";
     public static final String POST_CALCULATION_ENERGY_VALUES = "post-calculation-energy-values.json";
     public static final String TEMPLATE_JSON_FILE = "template.json";
     public static final String ABILITIES_JSON_FILE = "abilities.json";
     public static final String STATIC_ENERGY_VALUES_JSON = "energy-values.json.gz";
 
-    public static class Global
-    {
+    public static class Global {
+
         public static File dataDirectory;
 
         public static File preCalcluationEnergyValueFile;
@@ -23,9 +23,10 @@ public class Files
 
         public static File templateTransmutationKnowledgeFile;
 
-        public static void init(FMLPreInitializationEvent event)
-        {
-            dataDirectory = new File(event.getModConfigurationDirectory().getParentFile(), "data" + File.separator + Reference.LOWERCASE_MOD_ID);
+        public static void init(FMLPreInitializationEvent event) {
+            dataDirectory = new File(
+                    event.getModConfigurationDirectory().getParentFile(),
+                    "data" + File.separator + Reference.LOWERCASE_MOD_ID);
             dataDirectory.mkdirs();
 
             File energyValueDataDirectory = new File(dataDirectory, "energyvalues");

@@ -1,5 +1,11 @@
 package com.pahimar.ee3.recipe;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -7,11 +13,6 @@ import com.pahimar.ee3.exchange.WrappedStack;
 import com.pahimar.ee3.util.LoaderHelper;
 import com.pahimar.ee3.util.LogHelper;
 import cpw.mods.fml.common.Loader;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecipeRegistry {
 
@@ -57,7 +58,13 @@ public class RecipeRegistry {
 
         // Add the recipe mapping only if we don't already have it
         if (!recipeMap.get(wrappedRecipeOutput).contains(wrappedRecipeInputList)) {
-            LogHelper.trace(RECIPE_MARKER, "[{}] Mod with ID '{}' added recipe (Output: {}, Inputs: {})", LoaderHelper.getLoaderState(), Loader.instance().activeModContainer().getModId(), wrappedRecipeOutput, stringBuilder.toString().trim());
+            LogHelper.trace(
+                    RECIPE_MARKER,
+                    "[{}] Mod with ID '{}' added recipe (Output: {}, Inputs: {})",
+                    LoaderHelper.getLoaderState(),
+                    Loader.instance().activeModContainer().getModId(),
+                    wrappedRecipeOutput,
+                    stringBuilder.toString().trim());
             recipeMap.put(wrappedRecipeOutput, wrappedRecipeInputList);
         }
     }

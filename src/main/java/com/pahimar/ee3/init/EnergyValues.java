@@ -1,23 +1,23 @@
 package com.pahimar.ee3.init;
 
-import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
-import com.pahimar.ee3.exchange.OreStack;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class EnergyValues
-{
-    public static void addDefaultEnergyValues()
-    {
+import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
+import com.pahimar.ee3.exchange.OreStack;
+
+public class EnergyValues {
+
+    public static void addDefaultEnergyValues() {
         // OreDictionary assignment
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new OreStack("cobblestone"), 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new OreStack("dustRedstone"), 32);
-        String[] dyes = {"Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan", "LightGray", "Gray", "Pink", "Lime", "Yellow", "LightBlue", "Magenta", "Orange", "White"};
-        for (int i = 0; i < dyes.length; i++)
-        {
+        String[] dyes = { "Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan", "LightGray", "Gray", "Pink",
+                "Lime", "Yellow", "LightBlue", "Magenta", "Orange", "White" };
+        for (int i = 0; i < dyes.length; i++) {
             EnergyValueRegistryProxy.addPreAssignedEnergyValue(new OreStack("dye" + dyes[i]), 16);
         }
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new OreStack("gemDiamond"), 8192);
@@ -54,29 +54,36 @@ public class EnergyValues
         /* Building Blocks */
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.stone, 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.grass, 1);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.dirt, 1, OreDictionary.WILDCARD_VALUE), 1);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Blocks.dirt, 1, OreDictionary.WILDCARD_VALUE), 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.cobblestone, 1);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE), 1);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Blocks.sand, 1, OreDictionary.WILDCARD_VALUE), 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.gravel, 4);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.glass, 1, OreDictionary.WILDCARD_VALUE), 1);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.sandstone, 1, OreDictionary.WILDCARD_VALUE), 4);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Blocks.glass, 1, OreDictionary.WILDCARD_VALUE), 1);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Blocks.sandstone, 1, OreDictionary.WILDCARD_VALUE), 4);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.mossy_cobblestone, 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.obsidian, 64);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.ice, 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.pumpkin, 144);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.netherrack, 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.soul_sand, 49);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.stonebrick, 1, OreDictionary.WILDCARD_VALUE), 1);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Blocks.stonebrick, 1, OreDictionary.WILDCARD_VALUE), 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.mycelium, 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.end_stone, 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.hardened_clay, 256);
 
         /* Decoration Blocks */
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.web, 12);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.tallgrass, 1, OreDictionary.WILDCARD_VALUE), 1);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Blocks.tallgrass, 1, OreDictionary.WILDCARD_VALUE), 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.deadbush, 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.yellow_flower, 16);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.red_flower, 1, OreDictionary.WILDCARD_VALUE), 16);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Blocks.red_flower, 1, OreDictionary.WILDCARD_VALUE), 16);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.brown_mushroom, 32);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.red_mushroom, 32);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.red_mushroom, 32);
@@ -86,7 +93,8 @@ public class EnergyValues
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Blocks.waterlily, 16);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.anvil, 1, 1), 5290.667f);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.anvil, 1, 2), 2645.333f);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Blocks.double_plant, 1, OreDictionary.WILDCARD_VALUE), 32);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Blocks.double_plant, 1, OreDictionary.WILDCARD_VALUE), 32);
 
         /* Redstone */
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Items.redstone, 32);
@@ -104,8 +112,10 @@ public class EnergyValues
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Items.apple, 24);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Items.porkchop, 24);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Items.cooked_porkchop, 24);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Items.fish, 1, OreDictionary.WILDCARD_VALUE), 24);
-        EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(Items.cooked_fished, 1, OreDictionary.WILDCARD_VALUE), 24);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Items.fish, 1, OreDictionary.WILDCARD_VALUE), 24);
+        EnergyValueRegistryProxy
+                .addPreAssignedEnergyValue(new ItemStack(Items.cooked_fished, 1, OreDictionary.WILDCARD_VALUE), 24);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Items.melon, 16);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Items.beef, 24);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(Items.cooked_beef, 24);
@@ -154,7 +164,7 @@ public class EnergyValues
 
         /* Equivalent Exchange 3 */
         /**
-         *  Alchemical Dusts
+         * Alchemical Dusts
          */
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ModItems.alchemicalDust, 1, 0), 1);
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ModItems.alchemicalDust, 1, 1), 64);
@@ -162,7 +172,7 @@ public class EnergyValues
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ModItems.alchemicalDust, 1, 3), 8192);
 
         /**
-         *  Minium Shard
+         * Minium Shard
          */
         EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(ModItems.shardMinium), 8192);
     }

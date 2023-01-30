@@ -1,6 +1,7 @@
 package com.pahimar.ee3.exchange;
 
-import com.google.gson.*;
+import java.lang.reflect.Type;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -8,72 +9,58 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.lang.reflect.Type;
+import com.google.gson.*;
 
-public class JsonItemStack implements JsonSerializer<JsonItemStack>, JsonDeserializer<JsonItemStack>
-{
-    public static final Gson jsonSerializer = (new GsonBuilder()).registerTypeAdapter(JsonItemStack.class, new JsonItemStack()).create();
+public class JsonItemStack implements JsonSerializer<JsonItemStack>, JsonDeserializer<JsonItemStack> {
+
+    public static final Gson jsonSerializer = (new GsonBuilder())
+            .registerTypeAdapter(JsonItemStack.class, new JsonItemStack()).create();
 
     public String itemName;
     public int itemDamage;
     public NBTTagCompound itemNBTTagCompound;
 
-    public JsonItemStack()
-    {
+    public JsonItemStack() {
         this.itemName = null;
         this.itemDamage = 0;
         this.itemNBTTagCompound = null;
     }
 
-    public JsonItemStack(ItemStack itemStack)
-    {
+    public JsonItemStack(ItemStack itemStack) {
         this.itemName = Item.itemRegistry.getNameForObject(itemStack.getItem());
         this.itemDamage = itemStack.getItemDamage();
-        if (itemStack.stackTagCompound != null)
-        {
+        if (itemStack.stackTagCompound != null) {
             this.itemNBTTagCompound = itemStack.getTagCompound();
         }
     }
 
     @Override
-    public JsonItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-    {
-        if (json.isJsonObject())
-        {
+    public JsonItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
+        if (json.isJsonObject()) {
             JsonObject jsonObject = (JsonObject) json;
             JsonItemStack jsonItemStack = new JsonItemStack();
 
-            if (jsonObject.has("itemName"))
-            {
+            if (jsonObject.has("itemName")) {
                 jsonItemStack.itemName = jsonObject.get("itemName").getAsString();
-            }
-            else
-            {
+            } else {
                 throw new JsonParseException(""); // TODO Exception message
             }
 
-            if (jsonObject.has("itemDamage"))
-            {
+            if (jsonObject.has("itemDamage")) {
                 jsonItemStack.itemDamage = jsonObject.get("itemDamage").getAsInt();
-            }
-            else
-            {
+            } else {
                 throw new JsonParseException(""); // TODO Exception message
             }
 
-            if (jsonObject.has("itemNBTTagCompound"))
-            {
-                try
-                {
+            if (jsonObject.has("itemNBTTagCompound")) {
+                try {
                     NBTBase nbtBase = JsonToNBT.func_150315_a(jsonObject.get("itemNBTTagCompound").getAsString());
 
-                    if (nbtBase instanceof NBTTagCompound)
-                    {
+                    if (nbtBase instanceof NBTTagCompound) {
                         jsonItemStack.itemNBTTagCompound = (NBTTagCompound) nbtBase;
                     }
-                }
-                catch (NBTException e)
-                {
+                } catch (NBTException e) {
                     throw new JsonParseException(e.getMessage(), e.getCause());
                 }
             }
@@ -85,15 +72,13 @@ public class JsonItemStack implements JsonSerializer<JsonItemStack>, JsonDeseria
     }
 
     @Override
-    public JsonElement serialize(JsonItemStack src, Type typeOfSrc, JsonSerializationContext context)
-    {
+    public JsonElement serialize(JsonItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.addProperty("itemName", src.itemName);
         jsonObject.addProperty("itemDamage", src.itemDamage);
 
-        if (src.itemNBTTagCompound != null)
-        {
+        if (src.itemNBTTagCompound != null) {
             jsonObject.addProperty("itemNBTTagCompound", src.itemNBTTagCompound.toString());
         }
 
@@ -101,8 +86,11 @@ public class JsonItemStack implements JsonSerializer<JsonItemStack>, JsonDeseria
     }
 
     @Override
-    public String toString()
-    {
-        return String.format("itemName: %s, itemDamage: %s, itemNBTTagCompound: %s", itemName, itemDamage, itemNBTTagCompound);
+    public String toString() {
+        return String.format(
+                "itemName: %s, itemDamage: %s, itemNBTTagCompound: %s",
+                itemName,
+                itemDamage,
+                itemNBTTagCompound);
     }
 }

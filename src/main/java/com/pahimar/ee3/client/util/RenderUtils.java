@@ -1,19 +1,21 @@
 package com.pahimar.ee3.client.util;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class RenderUtils
-{
-    public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale, int zLevel)
-    {
+import cpw.mods.fml.client.FMLClientHandler;
+
+public class RenderUtils {
+
+    public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity,
+            float scale, int zLevel) {
         IIcon icon = itemStack.getIconIndex();
         GL11.glDisable(GL11.GL_LIGHTING);
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationItemsTexture);
@@ -32,8 +34,7 @@ public class RenderUtils
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 
-    public static void renderQuad(ResourceLocation texture)
-    {
+    public static void renderQuad(ResourceLocation texture) {
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         Tessellator tessellator = Tessellator.instance;
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -50,8 +51,7 @@ public class RenderUtils
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }
 
-    public static void renderPulsingQuad(ResourceLocation texture, float maxTransparency)
-    {
+    public static void renderPulsingQuad(ResourceLocation texture, float maxTransparency) {
         float pulseTransparency = getPulseValue() * maxTransparency / 3000f;
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         Tessellator tessellator = Tessellator.instance;
@@ -70,22 +70,16 @@ public class RenderUtils
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }
 
-    private static int getPulseValue()
-    {
-        if (doInc)
-        {
+    private static int getPulseValue() {
+        if (doInc) {
             pulse += 50;
-        }
-        else
-        {
+        } else {
             pulse -= 50;
         }
-        if (pulse == 3000)
-        {
+        if (pulse == 3000) {
             doInc = false;
         }
-        if (pulse == 0)
-        {
+        if (pulse == 0) {
             doInc = true;
         }
         return pulse;

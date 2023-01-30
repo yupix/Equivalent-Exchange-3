@@ -4,8 +4,8 @@ import com.pahimar.ee3.api.array.AlchemyArray;
 import com.pahimar.ee3.api.array.AlchemyArrayRegistryProxy;
 import com.pahimar.ee3.array.*;
 
-public class AlchemyArrays
-{
+public class AlchemyArrays {
+
     public static final AlchemyArray accelerantAlchemyArray = new AlchemyArrayAccelerant();
     public static final AlchemyArray combustionAlchemyArray = new AlchemyArrayCombustion();
     public static final AlchemyArray constructionAlchemyArray = new AlchemyArrayConstruction();
@@ -16,8 +16,7 @@ public class AlchemyArrays
     public static final AlchemyArray transfigurationAlchemyArray = new AlchemyArrayTransfiguration();
     public static final AlchemyArray transmutationAlchemyArray = new AlchemyArrayTransmutation();
 
-    public static void registerAlchemyArrays()
-    {
+    public static void registerAlchemyArrays() {
         AlchemyArrayRegistryProxy.registerAlchemyArray(accelerantAlchemyArray);
         AlchemyArrayRegistryProxy.registerAlchemyArray(combustionAlchemyArray);
         AlchemyArrayRegistryProxy.registerAlchemyArray(constructionAlchemyArray);

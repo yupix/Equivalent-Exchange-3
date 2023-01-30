@@ -1,16 +1,17 @@
 package com.pahimar.ee3.init;
 
+import net.minecraft.block.Block;
+
 import com.pahimar.ee3.block.*;
 import com.pahimar.ee3.item.ItemBlockAlchemicalChest;
 import com.pahimar.ee3.item.ItemBlockAlchemicalFuel;
 import com.pahimar.ee3.reference.Names;
 import com.pahimar.ee3.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
 
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
-public class ModBlocks
-{
+public class ModBlocks {
+
     public static final BlockEE chalkBlock = new BlockChalk();
     public static final BlockEE alchemicalFuelBlock = new BlockAlchemicalFuel();
     public static final BlockTileEntityEE alchemicalChest = new BlockAlchemicalChest();
@@ -25,8 +26,7 @@ public class ModBlocks
     public static final BlockTileEntityEE transmutationTablet = new BlockTransmutationTablet();
     public static final Block ashInfusedStoneSlab = new BlockAshInfusedStoneSlab();
 
-    public static void init()
-    {
+    public static void init() {
         GameRegistry.registerBlock(calcinator, Names.Blocks.CALCINATOR);
         GameRegistry.registerBlock(aludel, Names.Blocks.ALUDEL);
         GameRegistry.registerBlock(glassBell, Names.Blocks.GLASS_BELL);

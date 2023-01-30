@@ -6,8 +6,8 @@ import com.pahimar.ee3.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
-public class ModItems
-{
+public class ModItems {
+
     public static final ItemEE alchemicalBag = new ItemAlchemicalBag();
     public static final ItemEE alchemicalDust = new ItemAlchemicalDust();
     public static final ItemEE alchemicalFuel = new ItemAlchemicalFuel();
@@ -37,8 +37,7 @@ public class ModItems
     public static final ItemDarkMatterArrow arrowDarkMatter = new ItemDarkMatterArrow();
     public static final ItemDarkMatterSword swordDarkMatter = new ItemDarkMatterSword();
 
-    public static void init()
-    {
+    public static void init() {
         GameRegistry.registerItem(alchemicalBag, Names.Items.ALCHEMICAL_BAG);
         GameRegistry.registerItem(alchemicalDust, Names.Items.ALCHEMICAL_DUST);
         GameRegistry.registerItem(alchemicalFuel, Names.Items.ALCHEMICAL_FUEL);

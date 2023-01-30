@@ -1,0 +1,47 @@
+apply plugin: 'maven-publish'
+
+// This task creates a .jar file containing the source code of this mod.
+tasks.register('_sourcesJar', Jar) {
+    dependsOn classes
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
+
+// This task creates a .jar file containing a deobfuscated version of this mod, for other developers to use in a development environment.
+tasks.register('devJar', Jar) {
+    classifier = "dev"
+    from sourceSets.main.output
+}
+
+// Creates the listed artifacts on building the mod.
+artifacts {
+    archives tasks.named('_sourcesJar')
+    archives tasks.named('devJar')
+}
+
+// This block configures any maven publications you want to make.
+publishing {
+    publications {
+        create('tbc', MavenPublication) {
+            // Add any other artifacts here that you would like to publish!
+            artifact jar
+            artifact _sourcesJar
+            artifact devJar
+        }
+    }
+
+    // This block selects the repositories you want to publish to.
+    repositories {
+        maven {
+            name = "TeamBlackCrystal"
+            url = "https://nexus.teamblackcrystal.com/repository/maven-releases2/"
+            credentials {
+                username = System.env.MAVEN_USER
+                password = System.env.MAVEN_PASSWORD
+            }
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+}

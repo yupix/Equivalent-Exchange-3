@@ -1,5 +1,12 @@
 package com.pahimar.ee3.knowledge;
 
+import java.io.*;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -7,55 +14,44 @@ import com.pahimar.ee3.exchange.JsonItemStack;
 import com.pahimar.ee3.reference.Comparators;
 import com.pahimar.ee3.util.FilterUtils;
 import com.pahimar.ee3.util.ItemHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
-import java.io.*;
-import java.lang.reflect.Type;
-import java.util.*;
+public class TransmutationKnowledge
+        implements JsonSerializer<TransmutationKnowledge>, JsonDeserializer<TransmutationKnowledge> {
 
-public class TransmutationKnowledge implements JsonSerializer<TransmutationKnowledge>, JsonDeserializer<TransmutationKnowledge>
-{
-    private static final Gson jsonSerializer = (new GsonBuilder()).setPrettyPrinting().registerTypeAdapter(TransmutationKnowledge.class, new TransmutationKnowledge()).create();
+    private static final Gson jsonSerializer = (new GsonBuilder()).setPrettyPrinting()
+            .registerTypeAdapter(TransmutationKnowledge.class, new TransmutationKnowledge()).create();
     private Set<ItemStack> knownTransmutations;
     private boolean hasBeenModified = false;
 
-    public TransmutationKnowledge()
-    {
+    public TransmutationKnowledge() {
         this(new TreeSet<ItemStack>(Comparators.idComparator));
     }
 
-    public TransmutationKnowledge(Collection<ItemStack> knownTransmutations)
-    {
+    public TransmutationKnowledge(Collection<ItemStack> knownTransmutations) {
         this.knownTransmutations = new TreeSet<ItemStack>(Comparators.idComparator);
         this.knownTransmutations.addAll(knownTransmutations);
         hasBeenModified = false;
     }
 
-    public TransmutationKnowledge(ItemStack... knownTransmutations)
-    {
+    public TransmutationKnowledge(ItemStack... knownTransmutations) {
         this(Arrays.asList(knownTransmutations));
     }
 
-    public boolean isKnown(ItemStack itemStack)
-    {
+    public boolean isKnown(ItemStack itemStack) {
         ItemStack unitItemStack = itemStack.copy();
         unitItemStack.stackSize = 1;
         return this.knownTransmutations.contains(unitItemStack);
     }
 
-    public Set<ItemStack> getKnownTransmutations()
-    {
+    public Set<ItemStack> getKnownTransmutations() {
         return this.knownTransmutations;
     }
 
-    public boolean learnTransmutation(ItemStack itemStack)
-    {
+    public boolean learnTransmutation(ItemStack itemStack) {
         ItemStack unitItemStack = itemStack.copy();
         unitItemStack.stackSize = 1;
 
-        if (!this.knownTransmutations.contains(unitItemStack))
-        {
+        if (!this.knownTransmutations.contains(unitItemStack)) {
             hasBeenModified = true;
             return this.knownTransmutations.add(unitItemStack);
         }
@@ -63,13 +59,11 @@ public class TransmutationKnowledge implements JsonSerializer<TransmutationKnowl
         return false;
     }
 
-    public boolean forgetTransmutation(ItemStack itemStack)
-    {
+    public boolean forgetTransmutation(ItemStack itemStack) {
         ItemStack unitItemStack = itemStack.copy();
         unitItemStack.stackSize = 1;
 
-        if (this.knownTransmutations.contains(unitItemStack))
-        {
+        if (this.knownTransmutations.contains(unitItemStack)) {
             hasBeenModified = true;
             return this.knownTransmutations.remove(unitItemStack);
         }
@@ -77,35 +71,29 @@ public class TransmutationKnowledge implements JsonSerializer<TransmutationKnowl
         return false;
     }
 
-    public void forgetAllTransmutations()
-    {
+    public void forgetAllTransmutations() {
         this.knownTransmutations.clear();
         hasBeenModified = true;
     }
 
-    public boolean hasBeenModified()
-    {
+    public boolean hasBeenModified() {
         return hasBeenModified;
     }
 
-    public Set<ItemStack> filterByNameStartsWith(String filterString)
-    {
+    public Set<ItemStack> filterByNameStartsWith(String filterString) {
         return FilterUtils.filterByNameStartsWith(getKnownTransmutations(), filterString);
     }
 
-    public Set<ItemStack> filterByNameContains(String filterString)
-    {
+    public Set<ItemStack> filterByNameContains(String filterString) {
         return FilterUtils.filterByNameContains(getKnownTransmutations(), filterString);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("[");
-        for (ItemStack itemStack : knownTransmutations)
-        {
+        for (ItemStack itemStack : knownTransmutations) {
             stringBuilder.append(String.format("%s, ", ItemHelper.toString(itemStack)));
         }
         stringBuilder.append("]");
@@ -113,71 +101,54 @@ public class TransmutationKnowledge implements JsonSerializer<TransmutationKnowl
         return stringBuilder.toString();
     }
 
-    public static TransmutationKnowledge createFromJson(String jsonTransmutationKnowledge) throws JsonParseException
-    {
-        try
-        {
+    public static TransmutationKnowledge createFromJson(String jsonTransmutationKnowledge) throws JsonParseException {
+        try {
             return jsonSerializer.fromJson(jsonTransmutationKnowledge, TransmutationKnowledge.class);
-        }
-        catch (JsonSyntaxException exception)
-        {
+        } catch (JsonSyntaxException exception) {
             exception.printStackTrace();
-        }
-        catch (JsonParseException exception)
-        {
+        } catch (JsonParseException exception) {
             exception.printStackTrace();
         }
 
         return null;
     }
 
-    public String toJson()
-    {
+    public String toJson() {
         return jsonSerializer.toJson(this);
     }
 
     @Override
-    public TransmutationKnowledge deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-    {
-        if (json.isJsonObject())
-        {
+    public TransmutationKnowledge deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
+        if (json.isJsonObject()) {
             JsonObject jsonObject = (JsonObject) json;
 
             Set<ItemStack> itemStacks = new TreeSet<ItemStack>(Comparators.idComparator);
 
-            if (jsonObject.has("knownTransmutations") && jsonObject.get("knownTransmutations").isJsonArray())
-            {
+            if (jsonObject.has("knownTransmutations") && jsonObject.get("knownTransmutations").isJsonArray()) {
                 JsonArray jsonArray = (JsonArray) jsonObject.get("knownTransmutations");
                 Iterator<JsonElement> iterator = jsonArray.iterator();
 
-                while (iterator.hasNext())
-                {
+                while (iterator.hasNext()) {
                     JsonElement jsonElement = iterator.next();
-                    if (jsonElement.isJsonObject())
-                    {
-                        try
-                        {
-                            JsonItemStack jsonItemStack = JsonItemStack.jsonSerializer.fromJson(jsonElement, JsonItemStack.class);
+                    if (jsonElement.isJsonObject()) {
+                        try {
+                            JsonItemStack jsonItemStack = JsonItemStack.jsonSerializer
+                                    .fromJson(jsonElement, JsonItemStack.class);
 
                             ItemStack itemStack = null;
                             Item item = (Item) Item.itemRegistry.getObject(jsonItemStack.itemName);
-                            if (item != null)
-                            {
+                            if (item != null) {
                                 itemStack = new ItemStack(item, 1, jsonItemStack.itemDamage);
-                                if (jsonItemStack.itemNBTTagCompound != null)
-                                {
+                                if (jsonItemStack.itemNBTTagCompound != null) {
                                     itemStack.stackTagCompound = jsonItemStack.itemNBTTagCompound;
                                 }
                             }
 
-                            if (itemStack != null)
-                            {
+                            if (itemStack != null) {
                                 itemStacks.add(itemStack);
                             }
-                        }
-                        catch (JsonParseException e)
-                        {
-                        }
+                        } catch (JsonParseException e) {}
                     }
                 }
             }
@@ -189,13 +160,12 @@ public class TransmutationKnowledge implements JsonSerializer<TransmutationKnowl
     }
 
     @Override
-    public JsonElement serialize(TransmutationKnowledge transmutationKnowledge, Type typeOfSrc, JsonSerializationContext context)
-    {
+    public JsonElement serialize(TransmutationKnowledge transmutationKnowledge, Type typeOfSrc,
+            JsonSerializationContext context) {
         JsonObject jsonTransmutationKnowledge = new JsonObject();
 
         JsonArray knownTransmutations = new JsonArray();
-        for (ItemStack itemStack : transmutationKnowledge.getKnownTransmutations())
-        {
+        for (ItemStack itemStack : transmutationKnowledge.getKnownTransmutations()) {
             knownTransmutations.add(JsonItemStack.jsonSerializer.toJsonTree(new JsonItemStack(itemStack)));
         }
         jsonTransmutationKnowledge.add("knownTransmutations", knownTransmutations);
@@ -203,41 +173,32 @@ public class TransmutationKnowledge implements JsonSerializer<TransmutationKnowl
         return jsonTransmutationKnowledge;
     }
 
-    public static void writeToFile(File file, TransmutationKnowledge transmutationKnowledge)
-    {
+    public static void writeToFile(File file, TransmutationKnowledge transmutationKnowledge) {
         JsonWriter jsonWriter;
 
-        try
-        {
+        try {
             jsonWriter = new JsonWriter(new FileWriter(file));
             jsonWriter.setIndent("    ");
             jsonSerializer.toJson(transmutationKnowledge, TransmutationKnowledge.class, jsonWriter);
             jsonWriter.close();
             transmutationKnowledge.hasBeenModified = false;
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static TransmutationKnowledge readFromFile(File file)
-    {
+    public static TransmutationKnowledge readFromFile(File file) {
         JsonReader jsonReader;
 
-        try
-        {
+        try {
             jsonReader = new JsonReader(new FileReader(file));
-            TransmutationKnowledge transmutationKnowledge = jsonSerializer.fromJson(jsonReader, TransmutationKnowledge.class);
+            TransmutationKnowledge transmutationKnowledge = jsonSerializer
+                    .fromJson(jsonReader, TransmutationKnowledge.class);
             jsonReader.close();
             return transmutationKnowledge;
-        }
-        catch (FileNotFoundException ignored)
-        {
+        } catch (FileNotFoundException ignored) {
             // NOOP
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
