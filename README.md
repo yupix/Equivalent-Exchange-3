@@ -9,6 +9,17 @@
 
 [FAQ](https://github.com/pahimar/Equivalent-Exchange-3/wiki/Frequently-Asked-Questions) - For those that have questions.
 
+### 変更点
+
+- gradleの更新
+- 依存関係でGTNHを使うように
+
+### publish方法（身内用）
+
+```shell
+./gradlew publishAllPublicationsToTeamBlackCrystalRepository
+```
+
 ### Compiling Equivalent Exchange 3
 IMPORTANT: Please report any issues you have as there might be some problems with the documentation.
 Also make sure you know EXACTLY what you're doing before proceeding!  We are not responsible if your computer crashes, becomes corrupted, etc. :see_no_evil:
