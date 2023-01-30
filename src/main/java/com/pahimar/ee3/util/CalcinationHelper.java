@@ -20,7 +20,7 @@ public class CalcinationHelper
             float residualEMC = itemStackEnergyValue.getValue() - (dustAmount * dustEnergyValue.getValue());
 
             double u = (double) residualEMC / dustEnergyValue.getValue(); // expected value (µ)
-            double s = u / 2; // deviation (σ)
+            double s = u / 2; // deviation ()
             u *= 1 - 0.0043451773677092; // negative cut-off correction factor
             dustAmount += (int) (Math.max(0, random.nextGaussian() * s + u) + random.nextDouble());
 
