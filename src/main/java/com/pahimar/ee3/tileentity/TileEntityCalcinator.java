@@ -57,11 +57,13 @@ public class TileEntityCalcinator extends TileEntityEE implements ISidedInventor
     public int[] getAccessibleSlotsFromSide(int side) {
         return side == ForgeDirection.DOWN.ordinal()
                 ? new int[] { FUEL_INVENTORY_INDEX, OUTPUT_LEFT_INVENTORY_INDEX, OUTPUT_RIGHT_INVENTORY_INDEX }
-                : new int[] { INPUT_INVENTORY_INDEX, OUTPUT_LEFT_INVENTORY_INDEX, OUTPUT_RIGHT_INVENTORY_INDEX };
+                : new int[] { FUEL_INVENTORY_INDEX, INPUT_INVENTORY_INDEX, OUTPUT_LEFT_INVENTORY_INDEX,
+                        OUTPUT_RIGHT_INVENTORY_INDEX };
     }
 
     @Override
     public boolean canInsertItem(int slotIndex, ItemStack itemStack, int side) {
+
         return isItemValidForSlot(slotIndex, itemStack);
     }
 
@@ -170,6 +172,15 @@ public class TileEntityCalcinator extends TileEntityEE implements ISidedInventor
 
     @Override
     public boolean isItemValidForSlot(int slotIndex, ItemStack itemStack) {
+
+        if (itemStack != null) {
+            if (slotIndex == FUEL_INVENTORY_INDEX) {
+                return TileEntityFurnace.isItemFuel(itemStack);
+            } else if (slotIndex == INPUT_INVENTORY_INDEX) {
+                return true;
+            }
+        }
+
         return false;
     }
 

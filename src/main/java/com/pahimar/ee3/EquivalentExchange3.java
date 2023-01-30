@@ -3,13 +3,12 @@ package com.pahimar.ee3;
 import java.io.File;
 
 import com.pahimar.ee3.array.AlchemyArrayRegistry;
+import com.pahimar.ee3.blacklist.BlacklistRegistry;
 import com.pahimar.ee3.command.CommandEE;
-import com.pahimar.ee3.exchange.CachedOreDictionary;
 import com.pahimar.ee3.exchange.EnergyValueRegistry;
 import com.pahimar.ee3.handler.*;
 import com.pahimar.ee3.init.*;
-import com.pahimar.ee3.knowledge.AbilityRegistry;
-import com.pahimar.ee3.knowledge.TransmutationKnowledgeRegistry;
+import com.pahimar.ee3.knowledge.PlayerKnowledgeRegistry;
 import com.pahimar.ee3.network.PacketHandler;
 import com.pahimar.ee3.proxy.IProxy;
 import com.pahimar.ee3.recipe.AludelRecipeManager;
@@ -17,8 +16,9 @@ import com.pahimar.ee3.recipe.RecipeRegistry;
 import com.pahimar.ee3.reference.Files;
 import com.pahimar.ee3.reference.Messages;
 import com.pahimar.ee3.reference.Reference;
-import com.pahimar.ee3.reference.Settings;
-import com.pahimar.ee3.test.EnergyValueMappingsTestSuite;
+import com.pahimar.ee3.test.EETestSuite;
+import com.pahimar.ee3.test.EnergyValueTestSuite;
+import com.pahimar.ee3.test.VanillaTestSuite;
 import com.pahimar.ee3.util.FluidHelper;
 import com.pahimar.ee3.util.LogHelper;
 import com.pahimar.ee3.util.SerializationHelper;
@@ -49,6 +49,7 @@ public class EquivalentExchange3 {
 
     @EventHandler
     public void invalidFingerprint(FMLFingerprintViolationEvent event) {
+
         if (Reference.FINGERPRINT.equals("@FINGERPRINT@")) {
             LogHelper.info(Messages.NO_FINGERPRINT_MESSAGE);
         } else {
@@ -58,20 +59,19 @@ public class EquivalentExchange3 {
 
     @EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
+
+        Files.updateFileReferences();
+
         SerializationHelper.initModDataDirectories();
-
-        TransmutationKnowledgeRegistry.getInstance();
-
-        AbilityRegistry.getInstance().loadAbilityRegistryFromFile(Settings.Abilities.onlyLoadFile);
-
         event.registerServerCommand(new CommandEE());
     }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+
         ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 
-        Files.Global.init(event);
+        Files.init(event);
 
         PacketHandler.init();
 
@@ -83,15 +83,19 @@ public class EquivalentExchange3 {
 
         FluidHelper.registerFluids();
 
-        EnergyValues.addDefaultEnergyValues();
+        EnergyValues.init();
 
         AlchemyArrays.registerAlchemyArrays();
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
+
         // Register the GUI Handler
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
+
+        // Initialize the blacklist registry
+        BlacklistRegistry.INSTANCE.load();
 
         // Initialize mod tile entities
         TileEntities.init();
@@ -114,21 +118,26 @@ public class EquivalentExchange3 {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        CachedOreDictionary.getInstance();
-        Abilities.initNotLearnables();
+
+        Abilities.init();
+
+        // Initialize our test files
+        new VanillaTestSuite().build().save();
+        new EETestSuite().build().save();
     }
 
     @EventHandler
     public void onServerStopping(FMLServerStoppingEvent event) {
-        WorldEventHandler.hasInitilialized = false;
 
-        EnergyValueRegistry.getInstance().save();
-        TransmutationKnowledgeRegistry.getInstance().clear();
-        AbilityRegistry.getInstance().save();
+        WorldEventHandler.hasInitilialized = false;
+        EnergyValueRegistry.INSTANCE.save();
+        PlayerKnowledgeRegistry.INSTANCE.saveAll();
+        BlacklistRegistry.INSTANCE.saveAll();
     }
 
     @EventHandler
     public void handleMissingMappingEvent(FMLMissingMappingsEvent event) {
+
         for (FMLMissingMappingsEvent.MissingMapping mapping : event.get()) {
             if (mapping.type == GameRegistry.Type.ITEM) {
                 if (mapping.name.equals("EE3:alchemicalTome")) {
@@ -139,38 +148,38 @@ public class EquivalentExchange3 {
     }
 
     public EnergyValueRegistry getEnergyValueRegistry() {
-        return EnergyValueRegistry.getInstance();
+        return EnergyValueRegistry.INSTANCE;
     }
 
     public RecipeRegistry getRecipeRegistry() {
-        return RecipeRegistry.getInstance();
+        return RecipeRegistry.INSTANCE;
     }
 
     public AludelRecipeManager getAludelRecipeManager() {
         return AludelRecipeManager.getInstance();
     }
 
-    public AbilityRegistry getAbilityRegistry() {
-        return AbilityRegistry.getInstance();
+    public BlacklistRegistry getBlacklistRegistry() {
+        return BlacklistRegistry.INSTANCE;
     }
 
     public AlchemyArrayRegistry getAlchemyArrayRegistry() {
         return AlchemyArrayRegistry.getInstance();
     }
 
-    public TransmutationKnowledgeRegistry getTransmutationKnowledgeRegistry() {
-        return TransmutationKnowledgeRegistry.getInstance();
+    public PlayerKnowledgeRegistry getPlayerKnowledgeRegistry() {
+        return PlayerKnowledgeRegistry.INSTANCE;
     }
 
     public TileEntityDataHelper getTileEntityDataHelper() {
         return TileEntityDataHelper.getInstance();
     }
 
-    public void runEnergyValueMappingTest(File file) {
-        runEnergyValueMappingTest(file, false);
+    public void runEnergyValueTestSuite(File file) {
+        runEnergyValueTestSuite(file, false);
     }
 
-    public void runEnergyValueMappingTest(File file, boolean strict) {
-        new EnergyValueMappingsTestSuite(file).runTestSuite(strict);
+    public void runEnergyValueTestSuite(File file, boolean strict) {
+        new EnergyValueTestSuite(file).run(strict);
     }
 }

@@ -14,17 +14,17 @@ public class MessageGuiElementClicked implements IMessage, IMessageHandler<Messa
     public String elementName;
     public int buttonPressed;
 
-    public MessageGuiElementClicked() {
-
-    }
+    public MessageGuiElementClicked() {}
 
     public MessageGuiElementClicked(String elementName, int buttonPressed) {
+
         this.elementName = elementName;
         this.buttonPressed = buttonPressed;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
+
         int elementNameLength = buf.readInt();
         this.elementName = new String(buf.readBytes(elementNameLength).array());
         this.buttonPressed = buf.readInt();
@@ -32,6 +32,7 @@ public class MessageGuiElementClicked implements IMessage, IMessageHandler<Messa
 
     @Override
     public void toBytes(ByteBuf buf) {
+
         buf.writeInt(elementName.length());
         buf.writeBytes(elementName.getBytes());
         buf.writeInt(buttonPressed);
@@ -39,13 +40,12 @@ public class MessageGuiElementClicked implements IMessage, IMessageHandler<Messa
 
     @Override
     public IMessage onMessage(MessageGuiElementClicked message, MessageContext ctx) {
+
         EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
 
-        if (entityPlayer != null) {
-            if (entityPlayer.openContainer instanceof IElementButtonHandler) {
-                ((IElementButtonHandler) entityPlayer.openContainer)
-                        .handleElementButtonClick(message.elementName, message.buttonPressed);
-            }
+        if (entityPlayer != null && entityPlayer.openContainer instanceof IElementButtonHandler) {
+            ((IElementButtonHandler) entityPlayer.openContainer)
+                    .handleElementButtonClick(message.elementName, message.buttonPressed);
         }
 
         return null;

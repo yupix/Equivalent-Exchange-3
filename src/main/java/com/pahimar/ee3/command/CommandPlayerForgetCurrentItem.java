@@ -8,7 +8,7 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
+import com.pahimar.ee3.api.knowledge.PlayerKnowledgeRegistryProxy;
 import com.pahimar.ee3.reference.Messages;
 import com.pahimar.ee3.reference.Names;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -40,7 +40,7 @@ public class CommandPlayerForgetCurrentItem extends CommandBase {
             if (entityPlayer != null) {
                 ItemStack itemStack = ((EntityPlayer) commandSender).getCurrentEquippedItem();
                 if (itemStack != null) {
-                    TransmutationKnowledgeRegistryProxy.makePlayerForget(entityPlayer, itemStack);
+                    PlayerKnowledgeRegistryProxy.makePlayerForget(entityPlayer, itemStack);
                     func_152373_a(
                             commandSender,
                             this,

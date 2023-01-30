@@ -1,86 +1,64 @@
 package com.pahimar.ee3.api.knowledge;
 
-import com.pahimar.ee3.EquivalentExchange3;
-import cpw.mods.fml.common.Mod;
+import com.pahimar.ee3.api.blacklist.BlacklistRegistryProxy;
 
+@Deprecated
 public final class AbilityRegistryProxy {
 
-    @Mod.Instance("EE3")
-    private static Object ee3Mod;
-
+    /**
+     * @deprecated See {@link BlacklistRegistryProxy#isLearnable(Object)}
+     */
     public static boolean isLearnable(Object object) {
-        init();
-
-        if (ee3Mod != null) {
-            return EE3Wrapper.ee3mod.getAbilityRegistry().isLearnable(object);
-        }
-
-        return false;
+        return BlacklistRegistryProxy.isLearnable(object);
     }
 
+    /**
+     * @deprecated See {@link BlacklistRegistryProxy#setAsLearnable(Object)}
+     */
     public static void setAsLearnable(Object object) {
-        init();
-
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getAbilityRegistry().setAsLearnable(object);
-        }
+        BlacklistRegistryProxy.setAsLearnable(object);
     }
 
+    /**
+     * @deprecated See {@link BlacklistRegistryProxy#setAsNotLearnable(Object)}
+     */
     public static void setAsNotLearnable(Object object) {
-        init();
-
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getAbilityRegistry().setAsNotLearnable(object);
-        }
+        BlacklistRegistryProxy.setAsNotLearnable(object);
     }
 
+    /**
+     * @deprecated See {@link BlacklistRegistryProxy#isExchangeable(Object)}
+     */
     public static boolean isRecoverable(Object object) {
-        init();
-
-        if (ee3Mod != null) {
-            return EE3Wrapper.ee3mod.getAbilityRegistry().isRecoverable(object);
-        }
-
-        return false;
+        return BlacklistRegistryProxy.isExchangeable(object);
     }
 
+    /**
+     * @deprecated See {@link BlacklistRegistryProxy#setAsExchangeable(Object)}
+     */
     public static void setAsRecoverable(Object object) {
-        init();
-
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getAbilityRegistry().setAsRecoverable(object);
-        }
+        BlacklistRegistryProxy.setAsExchangeable(object);
     }
 
+    /**
+     * @deprecated See {@link BlacklistRegistryProxy#setAsNotExchangeable(Object)}
+     */
     public static void setAsNotRecoverable(Object object) {
-        init();
-
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getAbilityRegistry().setAsNotRecoverable(object);
-        }
+        BlacklistRegistryProxy.setAsNotExchangeable(object);
     }
 
+    /**
+     * @deprecated will be removed from EE3 in newer versions of Minecraft
+     */
     public static void dumpAbilityRegistryToLog() {
-        dumpAbilityRegistryToLog(Abilities.ALL);
+        // NOOP
     }
 
+    /**
+     * @deprecated will be removed from EE3 in newer versions of Minecraft
+     */
     public static void dumpAbilityRegistryToLog(Abilities ability) {
-        init();
-
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getAbilityRegistry().dumpAbilityRegistryToLog(ability);
-        }
-    }
-
-    private static class EE3Wrapper {
-
-        private static EquivalentExchange3 ee3mod;
-    }
-
-    private static void init() {
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod = (EquivalentExchange3) ee3Mod;
-        }
+        // NOOP
     }
 
     public enum Abilities {

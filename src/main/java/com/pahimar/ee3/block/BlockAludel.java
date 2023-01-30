@@ -97,6 +97,8 @@ public class BlockAludel extends BlockTileEntityEE {
                                 0.0D,
                                 0.0D);
                         break;
+                    default:
+                        break;
                 }
 
                 world.spawnParticle(

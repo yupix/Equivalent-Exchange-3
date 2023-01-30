@@ -11,7 +11,9 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.pahimar.ee3.api.knowledge.AbilityRegistryProxy;
+import com.pahimar.ee3.api.blacklist.BlacklistRegistryProxy;
+import com.pahimar.ee3.network.PacketHandler;
+import com.pahimar.ee3.network.message.MessageSetBlacklistEntry;
 import com.pahimar.ee3.reference.Messages;
 import com.pahimar.ee3.reference.Names;
 
@@ -72,7 +74,9 @@ public class CommandSetItemLearnable extends CommandBase {
                 }
             }
 
-            AbilityRegistryProxy.setAsLearnable(itemStack);
+            BlacklistRegistryProxy.removeFromBlacklist(itemStack, BlacklistRegistryProxy.Blacklist.KNOWLEDGE);
+            PacketHandler.INSTANCE.sendToAll(
+                    new MessageSetBlacklistEntry(itemStack, BlacklistRegistryProxy.Blacklist.KNOWLEDGE, false));
             func_152373_a(
                     commandSender,
                     this,

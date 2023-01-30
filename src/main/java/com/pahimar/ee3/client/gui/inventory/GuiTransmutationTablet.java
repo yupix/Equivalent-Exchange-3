@@ -1,7 +1,5 @@
 package com.pahimar.ee3.client.gui.inventory;
 
-import java.text.DecimalFormat;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
 
@@ -27,15 +25,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiTransmutationTablet extends GuiBase {
 
-    private TileEntityTransmutationTablet tileEntityTransmutationTablet;
+    private ContainerTransmutationTablet containerTablet;
 
     private ElementTextField searchTextField;
     private ElementStatefulButton sortOptionButton;
     private ElementStatefulButton sortOrderButton;
     private ElementSlider slider;
     protected int tickCount;
-
-    private static DecimalFormat energyValueDecimalFormat = new DecimalFormat("###,###,###,###,###.###");
 
     private static final int LEFT_MOUSE_BUTTON = 0;
     private static final int RIGHT_MOUSE_BUTTON = 1;
@@ -52,7 +48,7 @@ public class GuiTransmutationTablet extends GuiBase {
         super(
                 new ContainerTransmutationTablet(inventoryPlayer, tileEntityTransmutationTablet),
                 Textures.Gui.TRANSMUTATION_TABLET);
-        this.tileEntityTransmutationTablet = tileEntityTransmutationTablet;
+        this.containerTablet = (ContainerTransmutationTablet) this.inventorySlots;
         xSize = 256;
         ySize = 256;
     }
@@ -177,10 +173,7 @@ public class GuiTransmutationTablet extends GuiBase {
                 142,
                 Integer.parseInt(Colors.PURE_WHITE, 16));
         fontRendererObj.drawString(
-                String.format(
-                        "%s",
-                        energyValueDecimalFormat
-                                .format(tileEntityTransmutationTablet.getAvailableEnergyValue().getValue())),
+                String.format("%s", containerTablet.getEnergyValue()),
                 10,
                 152,
                 Integer.parseInt(Colors.PURE_WHITE, 16));

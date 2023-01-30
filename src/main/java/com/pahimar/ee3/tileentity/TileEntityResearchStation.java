@@ -1,7 +1,5 @@
 package com.pahimar.ee3.tileentity;
 
-import java.util.UUID;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -9,12 +7,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 
-import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
-import com.pahimar.ee3.knowledge.AbilityRegistry;
+import com.pahimar.ee3.api.blacklist.BlacklistRegistryProxy;
+import com.pahimar.ee3.api.knowledge.PlayerKnowledgeRegistryProxy;
 import com.pahimar.ee3.network.PacketHandler;
 import com.pahimar.ee3.network.message.MessageTileEntityResearchStation;
 import com.pahimar.ee3.reference.Names;
-import com.pahimar.ee3.util.ItemHelper;
+import com.pahimar.ee3.util.ItemStackUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -111,7 +109,7 @@ public class TileEntityResearchStation extends TileEntityEE implements IInventor
 
     @Override
     public boolean isItemValidForSlot(int slotIndex, ItemStack itemStack) {
-        return slotIndex == ITEM_SLOT_INVENTORY_INDEX && AbilityRegistry.getInstance().isLearnable(itemStack);
+        return slotIndex == ITEM_SLOT_INVENTORY_INDEX && BlacklistRegistryProxy.isLearnable(itemStack);
     }
 
     @Override
@@ -161,7 +159,8 @@ public class TileEntityResearchStation extends TileEntityEE implements IInventor
 
     @Override
     public void updateEntity() {
-        if (!this.worldObj.isRemote) {
+        if (!this.worldObj.isRemote && inventory[ALCHENOMICON_SLOT_INVENTORY_INDEX] != null
+                && inventory[ITEM_SLOT_INVENTORY_INDEX] != null) {
             // Continue "cooking" the same item, if we can
             if (this.canLearnItemStack()) {
                 this.itemLearnTime++;
@@ -180,10 +179,10 @@ public class TileEntityResearchStation extends TileEntityEE implements IInventor
 
     private boolean canLearnItemStack() {
         ItemStack alchenomicon = inventory[ALCHENOMICON_SLOT_INVENTORY_INDEX];
-        UUID playerUUID = ItemHelper.getOwnerUUID(alchenomicon);
+        String playerName = ItemStackUtils.getOwnerName(alchenomicon);
 
-        if (alchenomicon != null && playerUUID != null) {
-            return TransmutationKnowledgeRegistryProxy.canPlayerLearn(playerUUID, inventory[ITEM_SLOT_INVENTORY_INDEX]);
+        if (alchenomicon != null && playerName != null) {
+            return PlayerKnowledgeRegistryProxy.canPlayerLearn(playerName, inventory[ITEM_SLOT_INVENTORY_INDEX]);
         }
 
         return false;
@@ -191,10 +190,10 @@ public class TileEntityResearchStation extends TileEntityEE implements IInventor
 
     private boolean isItemStackKnown() {
         ItemStack alchenomicon = inventory[ALCHENOMICON_SLOT_INVENTORY_INDEX];
-        UUID playerUUID = ItemHelper.getOwnerUUID(alchenomicon);
+        String playerName = ItemStackUtils.getOwnerName(alchenomicon);
 
-        if (alchenomicon != null && playerUUID != null) {
-            return TransmutationKnowledgeRegistryProxy.doesPlayerKnow(playerUUID, inventory[ITEM_SLOT_INVENTORY_INDEX]);
+        if (alchenomicon != null && playerName != null) {
+            return PlayerKnowledgeRegistryProxy.doesPlayerKnow(playerName, inventory[ITEM_SLOT_INVENTORY_INDEX]);
         }
 
         return false;
@@ -202,8 +201,8 @@ public class TileEntityResearchStation extends TileEntityEE implements IInventor
 
     private void learnItemStack() {
         if (this.canLearnItemStack()) {
-            TransmutationKnowledgeRegistryProxy.teachPlayer(
-                    ItemHelper.getOwnerUUID(inventory[ALCHENOMICON_SLOT_INVENTORY_INDEX]),
+            PlayerKnowledgeRegistryProxy.teachPlayer(
+                    ItemStackUtils.getOwnerName(inventory[ALCHENOMICON_SLOT_INVENTORY_INDEX]),
                     inventory[ITEM_SLOT_INVENTORY_INDEX]);
 
             this.inventory[ITEM_SLOT_INVENTORY_INDEX].stackSize--;

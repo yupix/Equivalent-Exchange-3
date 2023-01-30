@@ -1,8 +1,12 @@
 package com.pahimar.ee3.api.exchange;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.pahimar.ee3.EquivalentExchange3;
+import com.pahimar.ee3.exchange.WrappedStack;
 import cpw.mods.fml.common.Mod;
 
 public final class EnergyValueRegistryProxy {
@@ -10,56 +14,33 @@ public final class EnergyValueRegistryProxy {
     @Mod.Instance("EE3")
     private static Object ee3Mod;
 
-    public static void addPreCalculationEnergyValue(Object object, float energyValue) {
-        addPreCalculationEnergyValue(object, new EnergyValue(energyValue));
+    public static Map<WrappedStack, EnergyValue> getPreCalculationEnergyValues() {
+        return getEnergyValues(Phase.PRE_CALCULATION);
     }
 
-    @Deprecated
-    public static void addPreAssignedEnergyValue(Object object, float energyValue) {
-        addPreAssignedEnergyValue(object, new EnergyValue(energyValue));
+    public static Map<WrappedStack, EnergyValue> getPostCalculationEnergyValues() {
+        return getEnergyValues(Phase.POST_CALCULATION);
     }
 
-    public static void addPreCalculationEnergyValue(Object object, EnergyValue energyValue) {
+    public static Map<WrappedStack, EnergyValue> getEnergyValues() {
+        return getEnergyValues(Phase.ALL);
+    }
+
+    public static Map<WrappedStack, EnergyValue> getEnergyValues(Phase phase) {
+
         init();
 
         if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getEnergyValueRegistry().addPreCalculationEnergyValue(object, energyValue);
+            if (phase == Phase.PRE_ASSIGNMENT || phase == Phase.PRE_CALCULATION) {
+                EE3Wrapper.ee3mod.getEnergyValueRegistry().getPreCalculationStackValueMap();
+            } else if (phase == Phase.POST_ASSIGNMENT || phase == Phase.POST_CALCULATION) {
+                EE3Wrapper.ee3mod.getEnergyValueRegistry().getPostCalculationStackValueMap();
+            } else if (phase == Phase.ALL) {
+                EE3Wrapper.ee3mod.getEnergyValueRegistry().getEnergyValues();
+            }
         }
-    }
 
-    @Deprecated
-    public static void addPreAssignedEnergyValue(Object object, EnergyValue energyValue) {
-        init();
-
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getEnergyValueRegistry().addPreCalculationEnergyValue(object, energyValue);
-        }
-    }
-
-    public static void addPostCalculationEnergyValue(Object object, float energyValue) {
-        addPostCalculationEnergyValue(object, new EnergyValue(energyValue));
-    }
-
-    @Deprecated
-    public static void addPostAssignedEnergyValue(Object object, float energyValue) {
-        addPostAssignedEnergyValue(object, new EnergyValue(energyValue));
-    }
-
-    public static void addPostCalculationEnergyValue(Object object, EnergyValue energyValue) {
-        init();
-
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getEnergyValueRegistry().addPostCalculationExactEnergyValue(object, energyValue);
-        }
-    }
-
-    @Deprecated
-    public static void addPostAssignedEnergyValue(Object object, EnergyValue energyValue) {
-        init();
-
-        if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getEnergyValueRegistry().addPostCalculationExactEnergyValue(object, energyValue);
-        }
+        return null;
     }
 
     public static boolean hasEnergyValue(Object object) {
@@ -67,6 +48,7 @@ public final class EnergyValueRegistryProxy {
     }
 
     public static boolean hasEnergyValue(Object object, boolean strict) {
+
         init();
 
         if (ee3Mod != null) {
@@ -81,14 +63,11 @@ public final class EnergyValueRegistryProxy {
     }
 
     public static EnergyValue getEnergyValue(Object object, boolean strict) {
-        return getEnergyValue(Phase.ALL, object, strict);
-    }
 
-    public static EnergyValue getEnergyValue(Phase phase, Object object, boolean strict) {
         init();
 
         if (ee3Mod != null) {
-            return EE3Wrapper.ee3mod.getEnergyValueRegistry().getEnergyValue(phase, object, strict);
+            return EE3Wrapper.ee3mod.getEnergyValueRegistry().getEnergyValue(object, strict);
         }
 
         return null;
@@ -99,6 +78,7 @@ public final class EnergyValueRegistryProxy {
     }
 
     public static EnergyValue getEnergyValueForStack(Object object, boolean strict) {
+
         init();
 
         if (ee3Mod != null) {
@@ -108,29 +88,128 @@ public final class EnergyValueRegistryProxy {
         return null;
     }
 
-    public static List getStacksInRange(float start, float finish) {
-        return getStacksInRange(new EnergyValue(start), new EnergyValue(finish));
+    public static List getStacksInRange(Number start, Number finish) {
+        return getStacksInRange(start, finish);
     }
 
     public static List getStacksInRange(EnergyValue start, EnergyValue finish) {
+
         init();
 
         if (ee3Mod != null) {
-            return EE3Wrapper.ee3mod.getEnergyValueRegistry().getStacksInRange(start, finish);
+            return new ArrayList<>(EE3Wrapper.ee3mod.getEnergyValueRegistry().getStacksInRange(start, finish));
         }
 
-        return null;
+        return Collections.EMPTY_LIST;
     }
 
-    public static void dumpEnergyValueRegistryToLog() {
-        dumpEnergyValueRegistryToLog(Phase.ALL);
+    /**
+     *
+     * @deprecated
+     * @param object
+     * @param energyValue
+     */
+    @Deprecated
+    public static void addPreAssignedEnergyValue(Object object, float energyValue) {
+        setEnergyValue(object, energyValue, Phase.PRE_CALCULATION);
     }
 
-    public static void dumpEnergyValueRegistryToLog(Phase phase) {
+    /**
+     *
+     * @deprecated
+     * @param object
+     * @param energyValue
+     */
+    @Deprecated
+    public static void addPreAssignedEnergyValue(Object object, EnergyValue energyValue) {
+        setEnergyValue(object, energyValue, Phase.PRE_CALCULATION);
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param object
+     * @param energyValue
+     */
+    @Deprecated
+    public static void addPreCalculationEnergyValue(Object object, float energyValue) {
+        setEnergyValue(object, energyValue, Phase.PRE_CALCULATION);
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param object
+     * @param energyValue
+     */
+    @Deprecated
+    public static void addPreCalculationEnergyValue(Object object, EnergyValue energyValue) {
+        setEnergyValue(object, energyValue, Phase.PRE_CALCULATION);
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param object
+     * @param energyValue
+     */
+    @Deprecated
+    public static void addPostAssignedEnergyValue(Object object, float energyValue) {
+        setEnergyValue(object, energyValue);
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param object
+     * @param energyValue
+     */
+    @Deprecated
+    public static void addPostAssignedEnergyValue(Object object, EnergyValue energyValue) {
+        setEnergyValue(object, energyValue);
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param object
+     * @param energyValue
+     */
+    @Deprecated
+    public static void addPostCalculationEnergyValue(Object object, float energyValue) {
+        setEnergyValue(object, energyValue);
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param object
+     * @param energyValue
+     */
+    @Deprecated
+    public static void addPostCalculationEnergyValue(Object object, EnergyValue energyValue) {
+        setEnergyValue(object, energyValue);
+    }
+
+    public static void setEnergyValue(Object object, Number energyValue) {
+        setEnergyValue(object, new EnergyValue(energyValue), Phase.POST_CALCULATION);
+    }
+
+    public static void setEnergyValue(Object object, EnergyValue energyValue) {
+        setEnergyValue(object, energyValue, Phase.POST_CALCULATION);
+    }
+
+    public static void setEnergyValue(Object object, Number energyValue, Phase phase) {
+
+        setEnergyValue(object, new EnergyValue(energyValue), phase);
+    }
+
+    public static void setEnergyValue(Object object, EnergyValue energyValue, Phase phase) {
+
         init();
 
         if (ee3Mod != null) {
-            EE3Wrapper.ee3mod.getEnergyValueRegistry().dumpEnergyValueRegistryToLog(phase);
+            EE3Wrapper.ee3mod.getEnergyValueRegistry().setEnergyValue(object, energyValue, phase);
         }
     }
 
@@ -140,30 +219,21 @@ public final class EnergyValueRegistryProxy {
     }
 
     private static void init() {
+
         if (ee3Mod != null) {
             EE3Wrapper.ee3mod = (EquivalentExchange3) ee3Mod;
         }
     }
 
     public enum Phase {
-        /**
-         * @Deprecated Use PRE_CALCULATION instead
-         */
         @Deprecated
         PRE_ASSIGNMENT,
-
         PRE_CALCULATION,
-
-        /**
-         * @Deprecated Use POST_CALCULATION instead
-         */
         @Deprecated
         POST_ASSIGNMENT,
-
         POST_CALCULATION,
-
+        @Deprecated
         RUNTIME,
-
         ALL
     }
 }

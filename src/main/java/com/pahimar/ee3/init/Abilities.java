@@ -4,25 +4,23 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import com.pahimar.ee3.api.knowledge.AbilityRegistryProxy;
-import com.pahimar.ee3.exchange.CachedOreDictionary;
+import com.pahimar.ee3.api.blacklist.BlacklistRegistryProxy;
 import com.pahimar.ee3.exchange.OreStack;
 
 public class Abilities {
 
-    public static void initNotLearnables() {
+    public static void init() {
+
         for (String oreName : OreDictionary.getOreNames()) {
             if (oreName.startsWith("ore")) {
-                for (ItemStack itemStack : CachedOreDictionary.getInstance().getItemStacksForOreName(oreName)) {
-                    AbilityRegistryProxy.setAsNotLearnable(itemStack);
-                }
-                AbilityRegistryProxy.setAsNotLearnable(new OreStack(oreName));
+                OreDictionary.getOres(oreName).forEach(BlacklistRegistryProxy::setAsNotLearnable);
+                BlacklistRegistryProxy.setAsNotLearnable(new OreStack(oreName));
             }
         }
-        AbilityRegistryProxy.setAsNotLearnable(new ItemStack(Blocks.coal_ore));
 
-        AbilityRegistryProxy.setAsNotLearnable(ModItems.shardMinium);
-        AbilityRegistryProxy.setAsNotLearnable(new ItemStack(ModItems.alchemicalDust, 1, 1));
-        AbilityRegistryProxy.setAsNotLearnable(new ItemStack(ModItems.alchemicalDust, 1, 2));
+        BlacklistRegistryProxy.setAsNotLearnable(new ItemStack(Blocks.coal_ore));
+        BlacklistRegistryProxy.setAsNotLearnable(ModItems.shardMinium);
+        BlacklistRegistryProxy.setAsNotLearnable(new ItemStack(ModItems.alchemicalDust, 1, 1));
+        BlacklistRegistryProxy.setAsNotLearnable(new ItemStack(ModItems.alchemicalDust, 1, 2));
     }
 }

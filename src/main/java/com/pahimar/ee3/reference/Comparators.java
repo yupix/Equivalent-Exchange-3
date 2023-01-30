@@ -1,60 +1,125 @@
 package com.pahimar.ee3.reference;
 
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Set;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import com.pahimar.ee3.exchange.EnergyValueRegistry;
+import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
+import com.pahimar.ee3.exchange.WrappedStack;
 
 public class Comparators {
 
-    public static Comparator<String> stringComparator = new Comparator<String>() {
+    public static final Comparator<Collection<ItemStack>> ITEM_STACK_COLLECTION_COMPARATOR = new Comparator<Collection<ItemStack>>() {
 
         @Override
-        public int compare(String string1, String string2) {
-            return string1.compareToIgnoreCase(string2);
+        public int compare(Collection<ItemStack> o1, Collection<ItemStack> o2) {
+
+            if (o1 != null && o2 != null) {
+                if (o1.size() == o2.size()) {
+                    if (o1.containsAll(o2)) {
+                        if (o2.containsAll(o1)) {
+                            return 0;
+                        } else {
+                            return 1;
+                        }
+                    } else {
+                        return -1;
+                    }
+                } else {
+                    return o1.size() - o2.size();
+                }
+            } else if (o1 != null) {
+                return -1;
+            } else if (o2 != null) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     };
 
-    public static Comparator<ItemStack> idComparator = new Comparator<ItemStack>() {
+    public static final Comparator<Set<WrappedStack>> WRAPPED_STACK_SET_COMPARATOR = new Comparator<Set<WrappedStack>>() {
 
-        public int compare(ItemStack itemStack1, ItemStack itemStack2) {
-            if (itemStack1 != null && itemStack2 != null) {
-                // Sort on itemID
-                if (Item.getIdFromItem(itemStack1.getItem()) - Item.getIdFromItem(itemStack2.getItem()) == 0) {
-                    // Sort on item
-                    if (itemStack1.getItem() == itemStack2.getItem()) {
-                        // Then sort on meta
-                        if ((itemStack1.getItemDamage() == itemStack2.getItemDamage())
-                                || itemStack1.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                                || itemStack2.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-                            // Then sort on NBT
-                            if (itemStack1.hasTagCompound() && itemStack2.hasTagCompound()) {
-                                // Then sort on stack size
-                                if (ItemStack.areItemStackTagsEqual(itemStack1, itemStack2)) {
-                                    return (itemStack1.stackSize - itemStack2.stackSize);
-                                } else {
-                                    return (itemStack1.getTagCompound().hashCode()
-                                            - itemStack2.getTagCompound().hashCode());
-                                }
-                            } else if (!(itemStack1.hasTagCompound()) && itemStack2.hasTagCompound()) {
-                                return -1;
-                            } else if (itemStack1.hasTagCompound() && !(itemStack2.hasTagCompound())) {
-                                return 1;
-                            } else {
-                                return (itemStack1.stackSize - itemStack2.stackSize);
-                            }
+        @Override
+        public int compare(Set<WrappedStack> collection1, Set<WrappedStack> collection2) {
+
+            if (collection1 != null && collection2 != null) {
+                if (collection1.size() == collection2.size()) {
+                    if (collection1.containsAll(collection2)) {
+                        if (collection2.containsAll(collection1)) {
+                            return 0;
                         } else {
-                            return (itemStack1.getItemDamage() - itemStack2.getItemDamage());
+                            return 1;
                         }
                     } else {
-                        return itemStack1.getItem().getUnlocalizedName(itemStack1)
-                                .compareToIgnoreCase(itemStack2.getItem().getUnlocalizedName(itemStack2));
+                        return -1;
                     }
                 } else {
-                    return Item.getIdFromItem(itemStack1.getItem()) - Item.getIdFromItem(itemStack2.getItem());
+                    return collection1.size() - collection2.size();
+                }
+            } else if (collection1 != null) {
+                return -1;
+            } else if (collection2 != null) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    };
+
+    public static final Comparator<String> STRING_COMPARATOR = String::compareToIgnoreCase;
+
+    public static final Comparator<ItemStack> ID_COMPARATOR = new Comparator<ItemStack>() {
+
+        @Override
+        public int compare(ItemStack itemStack1, ItemStack itemStack2) {
+
+            if (itemStack1 != null && itemStack2 != null) {
+                if (itemStack1.getItem() != null && itemStack2.getItem() != null) {
+                    // Sort on id
+                    if (Item.getIdFromItem(itemStack1.getItem()) - Item.getIdFromItem(itemStack2.getItem()) == 0) {
+                        // Sort on item
+                        if (itemStack1.getItem() == itemStack2.getItem()) {
+                            // Then sort on meta
+                            if ((itemStack1.getItemDamage() == itemStack2.getItemDamage())
+                                    || itemStack1.getItemDamage() == OreDictionary.WILDCARD_VALUE
+                                    || itemStack2.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+                                // Then sort on NBT
+                                if (itemStack1.hasTagCompound() && itemStack2.hasTagCompound()) {
+                                    // Then sort on stack size
+                                    if (ItemStack.areItemStackTagsEqual(itemStack1, itemStack2)) {
+                                        return (itemStack1.stackSize - itemStack2.stackSize);
+                                    } else {
+                                        return (itemStack1.getTagCompound().hashCode()
+                                                - itemStack2.getTagCompound().hashCode());
+                                    }
+                                } else if (!(itemStack1.hasTagCompound()) && itemStack2.hasTagCompound()) {
+                                    return -1;
+                                } else if (itemStack1.hasTagCompound() && !(itemStack2.hasTagCompound())) {
+                                    return 1;
+                                } else {
+                                    return (itemStack1.stackSize - itemStack2.stackSize);
+                                }
+                            } else {
+                                return (itemStack1.getItemDamage() - itemStack2.getItemDamage());
+                            }
+                        } else {
+                            return itemStack1.getItem().getUnlocalizedName(itemStack1)
+                                    .compareToIgnoreCase(itemStack2.getItem().getUnlocalizedName(itemStack2));
+                        }
+                    } else {
+                        return Item.getIdFromItem(itemStack1.getItem()) - Item.getIdFromItem(itemStack2.getItem());
+                    }
+                } else if (itemStack1.getItem() != null) {
+                    return -1;
+                } else if (itemStack2.getItem() != null) {
+                    return 1;
+                } else {
+                    return 0;
                 }
             } else if (itemStack1 != null) {
                 return -1;
@@ -66,20 +131,13 @@ public class Comparators {
         }
     };
 
-    public static Comparator<ItemStack> reverseIdComparator = new Comparator<ItemStack>() {
+    public static final Comparator<ItemStack> DISPLAY_NAME_COMPARATOR = new Comparator<ItemStack>() {
 
         @Override
         public int compare(ItemStack itemStack1, ItemStack itemStack2) {
-            return idComparator.compare(itemStack1, itemStack2) * -1;
-        }
-    };
-
-    public static Comparator<ItemStack> displayNameComparator = new Comparator<ItemStack>() {
-
-        public int compare(ItemStack itemStack1, ItemStack itemStack2) {
             if (itemStack1 != null && itemStack2 != null) {
                 if (itemStack1.getDisplayName().equalsIgnoreCase(itemStack2.getDisplayName())) {
-                    return idComparator.compare(itemStack1, itemStack2);
+                    return ID_COMPARATOR.compare(itemStack1, itemStack2);
                 } else {
                     return itemStack1.getDisplayName().compareToIgnoreCase(itemStack2.getDisplayName());
                 }
@@ -93,26 +151,18 @@ public class Comparators {
         }
     };
 
-    public static Comparator<ItemStack> reverseDisplayNameComparator = new Comparator<ItemStack>() {
-
-        @Override
-        public int compare(ItemStack itemStack1, ItemStack itemStack2) {
-            return displayNameComparator.compare(itemStack1, itemStack2) * -1;
-        }
-    };
-
-    public static Comparator<ItemStack> energyValueItemStackComparator = new Comparator<ItemStack>() {
+    public static final Comparator<ItemStack> ENERGY_VALUE_ITEM_STACK_COMPARATOR = new Comparator<ItemStack>() {
 
         @Override
         public int compare(ItemStack itemStack1, ItemStack itemStack2) {
             if (itemStack1 != null && itemStack2 != null) {
-                if (EnergyValueRegistry.getInstance().hasEnergyValue(itemStack1)
-                        && EnergyValueRegistry.getInstance().hasEnergyValue(itemStack2)) {
+                if (EnergyValueRegistryProxy.hasEnergyValue(itemStack1)
+                        && EnergyValueRegistryProxy.hasEnergyValue(itemStack2)) {
                     return Float.compare(
-                            EnergyValueRegistry.getInstance().getEnergyValue(itemStack1).getValue(),
-                            EnergyValueRegistry.getInstance().getEnergyValue(itemStack2).getValue());
+                            EnergyValueRegistryProxy.getEnergyValue(itemStack1).getValue(),
+                            EnergyValueRegistryProxy.getEnergyValue(itemStack2).getValue());
                 } else {
-                    return idComparator.compare(itemStack1, itemStack2);
+                    return ID_COMPARATOR.compare(itemStack1, itemStack2);
                 }
             } else if (itemStack1 != null) {
                 return -1;
@@ -121,14 +171,6 @@ public class Comparators {
             } else {
                 return 0;
             }
-        }
-    };
-
-    public static Comparator<ItemStack> reverseEnergyValueComparator = new Comparator<ItemStack>() {
-
-        @Override
-        public int compare(ItemStack itemStack1, ItemStack itemStack2) {
-            return energyValueItemStackComparator.compare(itemStack1, itemStack2) * -1;
         }
     };
 }

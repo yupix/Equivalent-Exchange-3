@@ -12,7 +12,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
+import com.pahimar.ee3.api.knowledge.PlayerKnowledgeRegistryProxy;
 import com.pahimar.ee3.reference.Messages;
 import com.pahimar.ee3.reference.Names;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -77,7 +77,7 @@ public class CommandPlayerForgetItem extends CommandBase {
                     }
                 }
 
-                TransmutationKnowledgeRegistryProxy.makePlayerForget(entityPlayer, itemStack);
+                PlayerKnowledgeRegistryProxy.makePlayerForget(entityPlayer, itemStack);
                 func_152373_a(
                         commandSender,
                         this,

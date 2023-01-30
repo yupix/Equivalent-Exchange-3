@@ -6,8 +6,8 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import com.pahimar.ee3.api.blacklist.BlacklistRegistryProxy;
 import com.pahimar.ee3.item.ItemAlchenomicon;
-import com.pahimar.ee3.knowledge.AbilityRegistry;
 import com.pahimar.ee3.tileentity.TileEntityResearchStation;
 
 import cpw.mods.fml.relauncher.Side;
@@ -33,7 +33,7 @@ public class ContainerResearchStation extends ContainerEE {
 
                     @Override
                     public boolean isItemValid(ItemStack itemStack) {
-                        return AbilityRegistry.getInstance().isLearnable(itemStack);
+                        return BlacklistRegistryProxy.isLearnable(itemStack);
                     }
                 });
 

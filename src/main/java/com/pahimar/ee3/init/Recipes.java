@@ -61,17 +61,11 @@ public class Recipes {
                 's',
                 new ItemStack(ModBlocks.ashInfusedStoneSlab));
 
-        GameRegistry.addShapedRecipe(
-                new ItemStack(ModBlocks.chalkBlock),
-                "bcb",
-                "cbc",
-                "bcb",
-                'b',
+        GameRegistry.addShapelessRecipe(
+                new ItemStack(ModItems.chalk),
                 new ItemStack(Items.dye, 1, 15),
-                'c',
                 new ItemStack(Items.clay_ball));
-        GameRegistry
-                .addShapedRecipe(new ItemStack(ModBlocks.chalkBlock), "cc", "cc", 'c', new ItemStack(ModItems.chalk));
+        GameRegistry.addShapedRecipe(new ItemStack(ModBlocks.chalkBlock), "cc", "cc", 'c', ModItems.chalk);
 
         GameRegistry.addShapedRecipe(new ItemStack(ModBlocks.glassBell), "ggg", "g g", "g g", 'g', Blocks.glass);
         GameRegistry.addRecipe(
@@ -280,6 +274,22 @@ public class Recipes {
                 new ItemStack(ModItems.alchemicalDust, 14, 3));
 
         // Alchemical Chest
+        AludelRecipeManager.getInstance().addRecipe(
+                new ItemStack(ModBlocks.alchemicalChest, 1, 0),
+                new ItemStack(Blocks.chest, 1, OreDictionary.WILDCARD_VALUE),
+                new ItemStack(ModItems.alchemicalDust, 8, 1));
+        AludelRecipeManager.getInstance().addRecipe(
+                new ItemStack(ModBlocks.alchemicalChest, 1, 0),
+                new ItemStack(Blocks.trapped_chest, 1, OreDictionary.WILDCARD_VALUE),
+                new ItemStack(ModItems.alchemicalDust, 8, 1));
+        AludelRecipeManager.getInstance().addRecipe(
+                new ItemStack(ModBlocks.alchemicalChest, 1, 1),
+                new ItemStack(Blocks.chest, 1, OreDictionary.WILDCARD_VALUE),
+                new ItemStack(ModItems.alchemicalDust, 8, 2));
+        AludelRecipeManager.getInstance().addRecipe(
+                new ItemStack(ModBlocks.alchemicalChest, 1, 1),
+                new ItemStack(ModBlocks.alchemicalChest, 1, 0),
+                new ItemStack(ModItems.alchemicalDust, 8, 2));
         AludelRecipeManager.getInstance().addRecipe(
                 new ItemStack(ModBlocks.alchemicalChest, 1, 2),
                 new ItemStack(Blocks.chest, 1, OreDictionary.WILDCARD_VALUE),

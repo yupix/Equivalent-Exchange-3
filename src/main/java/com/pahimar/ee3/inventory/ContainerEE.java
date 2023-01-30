@@ -4,7 +4,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import com.pahimar.ee3.util.ItemHelper;
+import com.pahimar.ee3.util.ItemStackUtils;
 
 public abstract class ContainerEE extends Container {
 
@@ -25,7 +25,7 @@ public abstract class ContainerEE extends Container {
                 slot = (Slot) this.inventorySlots.get(currentSlotIndex);
                 stackInSlot = slot.getStack();
 
-                if (slot.isItemValid(itemStack) && ItemHelper.equalsIgnoreStackSize(itemStack, stackInSlot)) {
+                if (slot.isItemValid(itemStack) && ItemStackUtils.equalsIgnoreStackSize(itemStack, stackInSlot)) {
                     int combinedStackSize = stackInSlot.stackSize + itemStack.stackSize;
                     int slotStackSizeLimit = Math.min(stackInSlot.getMaxStackSize(), slot.getSlotStackLimit());
 
@@ -55,9 +55,7 @@ public abstract class ContainerEE extends Container {
 
                 if (slot.isItemValid(itemStack) && stackInSlot == null) {
                     slot.putStack(
-                            ItemHelper.cloneItemStack(
-                                    itemStack,
-                                    Math.min(itemStack.stackSize, slot.getSlotStackLimit())));
+                            ItemStackUtils.clone(itemStack, Math.min(itemStack.stackSize, slot.getSlotStackLimit())));
                     slot.onSlotChanged();
 
                     if (slot.getStack() != null) {

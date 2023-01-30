@@ -49,7 +49,11 @@ public class ItemDarkMatterAxe extends ItemToolModalEE implements IKeyBound, ICh
 
     @Override
     public short getChargeLevel(ItemStack itemStack) {
-        return NBTHelper.getShort(itemStack, Names.NBT.CHARGE_LEVEL);
+        if (NBTHelper.getShort(itemStack, Names.NBT.CHARGE_LEVEL) != null) {
+            return NBTHelper.getShort(itemStack, Names.NBT.CHARGE_LEVEL);
+        }
+
+        return 0;
     }
 
     @Override
@@ -61,21 +65,15 @@ public class ItemDarkMatterAxe extends ItemToolModalEE implements IKeyBound, ICh
 
     @Override
     public void increaseChargeLevel(ItemStack itemStack) {
-        if (NBTHelper.getShort(itemStack, Names.NBT.CHARGE_LEVEL) < this.getMaxChargeLevel()) {
-            NBTHelper.setShort(
-                    itemStack,
-                    Names.NBT.CHARGE_LEVEL,
-                    (short) (NBTHelper.getShort(itemStack, Names.NBT.CHARGE_LEVEL) + 1));
+        if (getChargeLevel(itemStack) < this.getMaxChargeLevel()) {
+            NBTHelper.setShort(itemStack, Names.NBT.CHARGE_LEVEL, (short) (getChargeLevel(itemStack) + 1));
         }
     }
 
     @Override
     public void decreaseChargeLevel(ItemStack itemStack) {
-        if (NBTHelper.getShort(itemStack, Names.NBT.CHARGE_LEVEL) > 0) {
-            NBTHelper.setShort(
-                    itemStack,
-                    Names.NBT.CHARGE_LEVEL,
-                    (short) (NBTHelper.getShort(itemStack, Names.NBT.CHARGE_LEVEL) - 1));
+        if (getChargeLevel(itemStack) > 0) {
+            NBTHelper.setShort(itemStack, Names.NBT.CHARGE_LEVEL, (short) (getChargeLevel(itemStack) - 1));
         }
     }
 

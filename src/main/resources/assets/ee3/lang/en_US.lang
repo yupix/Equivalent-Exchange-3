@@ -1,15 +1,24 @@
-# Configuration
-general.sync.threshold.label=Sync Threshold
-general.sync.threshold.comment=The number of seconds a player must wait before they can sync their Energy Values with the server again
+# Configuration (Energy Value Options)
+energy_value=Energy Value Options
+energy_value.regenerate_values_when.label=Regenerate Energy Values When
+energy_value.regenerate_values_when.comment=When to regenerate energy values for objects. Options are "Always" (every time Minecraft starts) or "As Needed" (whenever the mod cannot the calculated energy values file).
+energy_value.debug_logging_enabled.label=Enable Debug Logging
+energy_value.debug_logging_enabled.comment=Additional debug logging for when energy values are calculated for objects
 
-general.sound.soundMode.label=Sounds
-general.sound.soundMode.comment='All' plays mod sounds from all players, 'Self' only plays mod sounds from you, and 'None' plays no mod sounds
+# Configuration (Sound Options)
+sound=Sound Options
+sound.mode.label=Play Sounds Only From
+sound.mode.comment='All' plays mod sounds from all players, 'Self' only plays mod sounds from you, and 'None' does not play any mod sounds
 
-general.abilities.onlyLoadFile.label=Only load Abilities file
-general.abilities.onlyLoadFile.comment=Setting this to true means that Abilities are initially only loaded from file, rather than from both file and from other mods
+# Configuration (Player Knowledge Options)
+player_knowledge=Player Knowledge Options
+player_knowledge.use_template.label=Use Knowledge Template
+player_knowledge.use_template.comment=Whether or not to use the player knowledge template. The template allows players to start with some items already researched
 
-general.energyvalues.regenerateEnergyValuesWhen.label=Regenerate EnergyValues
-general.energyvalues.regenerateEnergyValuesWhen.comment=When to regenerate EnergyValues. Options are "Always" (every time Minecraft starts), "When Mods Change" (when mods are added, removed, or updated) or "Never" (only generate the first time).
+# Server Options
+server=Server Options
+server.sync_threshold.label=Sync Threshold
+server.sync_threshold.comment=The number of seconds a player must wait before they can sync their energy values for objects with the server again
 
 # Keys
 key.categories.ee3=Equivalent Exchange 3
@@ -80,7 +89,7 @@ tile.ee3:alchemicalFuelBlock.alchemicalCoal.name=Block of Alchemical Coal
 tile.ee3:alchemicalFuelBlock.mobiusFuel.name=Block of Mobius Fuel
 tile.ee3:alchemicalFuelBlock.aeternalisFuel.name=Block of Aeternalis Fuel
 tile.ee3:aludel.name=Aludel Base
-tile.ee3:calcinator.name=Calcinator
+tile.ee3:calcinator.name=Calciner
 tile.ee3:chalk.name=Chalk
 tile.ee3:glassBell.name=Glass Bell
 tile.ee3:researchStation.name=Research Station
@@ -119,9 +128,6 @@ container.ee3:alchenomicon.noTransmutationsKnown=No known transmutations
 container.ee3:transmutationAlchemyArray=Transmutation Square [WIP]
 
 # NEI
-gui.nei.ee3:calcination=Calcination
-gui.nei.ee3:calcination.tooltip.1=Energy values needed to calcine
-gui.nei.ee3:calcination.tooltip.2=From %s to %s
 gui.nei.ee3:aludel=Aludel
 
 # Commands
@@ -133,6 +139,9 @@ commands.ee3.set-energy-value.usage=/ee3 set-energy-value <pre|global-pre|post|g
 commands.ee3.set-energy-value.success=%s set a %s EnergyValue of %s to %s
 commands.ee3.set-energy-value-current-item.usage=/ee3 set-energy-value-current-item <pre|global-pre|post|global-post> <value>
 commands.ee3.set-energy-value-current-item.success=%s set a %s EnergyValue of %s to %s
+commands.ee3.regen-energy-values.usage=/ee3 regen-energy-values
+commands.ee3.regen-energy-values.success=Successfully recalculated energy values
+commands.ee3.regen-energy-values.denied=Please wait %s more seconds and try again
 commands.ee3.sync-energy-values.usage=/ee3 sync-energy-values
 commands.ee3.sync-energy-values.success=Successfully synchronized energy values with the server
 commands.ee3.sync-energy-values.denied=Please wait %s more seconds and try again
@@ -146,28 +155,30 @@ commands.ee3.player-forget-item.usage=/ee3 player-forget-item <playername> <item
 commands.ee3.player-forget-item.success=%s made %s forget how to transmute %s
 commands.ee3.player-forget-current-item.usage=/ee3 player-forget-current-item <playername>
 commands.ee3.player-forget-current-item.success=%s made %s forget how to transmute %s
-commands.ee3.template-learn-item.usage=/ee3 template-learn-item <item> <data> [dataTag]
-commands.ee3.template-learn-item.success=%s taught the knowledge template how to transmute %s
-commands.ee3.template-learn-current-item.usage=/ee3 template-learn-current-item
-commands.ee3.template-learn-current-item.success=%s taught the knowledge template how to transmute %s
-commands.ee3.template-forget-everything.usage=/ee3 template-forget-everything
-commands.ee3.template-forget-everything.success=%s made the knowledge template forget how to transmute everything
-commands.ee3.template-forget-item.usage=/ee3 template-forget-item <item> <data> [dataTag]
-commands.ee3.template-forget-item.success=%s made the knowledge template forget how to transmute %s
-commands.ee3.template-forget-current-item.usage=/ee3 template-forget-current-item
-commands.ee3.template-forget-current-item.success=%s made the knowledge template forget how to transmute %s
 commands.ee3.set-item-learnable.usage=/ee3 set-item-learnable <item> <data> [dataTag]
 commands.ee3.set-item-learnable.success=%s set %s as learnable for transmutations
+commands.ee3.set-current-item-learnable.usage=/ee3 set-current-item-learnable
+commands.ee3.set-current-item-learnable.success=%s set %s as learnable for transmutations
+commands.ee3.set-current-item-learnable.no-effect=%s is already learnable
 commands.ee3.set-item-not-learnable.usage=/ee3 set-item-not-learnable <item> <data> [dataTag]
 commands.ee3.set-item-not-learnable.success=%s set %s as not learnable for transmutations
+commands.ee3.set-current-item-not-learnable.usage=/ee3 set-current-item-not-learnable
+commands.ee3.set-current-item-not-learnable.success=%s set %s as not learnable for transmutations
+commands.ee3.set-current-item-not-learnable.no-effect=%s is already not learnable
 commands.ee3.set-item-recoverable.usage=/ee3 set-item-recoverable <item> <data> [dataTag]
 commands.ee3.set-item-recoverable.success=%s set %s as being able to have its energy value recovered
+commands.ee3.set-current-item-recoverable.usage=/ee3 set-current-item-recoverable
+commands.ee3.set-current-item-recoverable.success=%s set %s as being able to have its energy value recovered
+commands.ee3.set-current-item-recoverable.no-effect=%s is already exchangeable
 commands.ee3.set-item-not-recoverable.usage=/ee3 set-item-not-recoverable <item> <data> [dataTag]
 commands.ee3.set-item-not-recoverable.success=%s set %s as not being able to have its energy value recovered
+commands.ee3.set-current-item-not-recoverable.usage=/ee3 set-current-item-not-recoverable
+commands.ee3.set-current-item-not-recoverable.success=%s set %s as not being able to have its energy value recovered
+commands.ee3.set-current-item-not-recoverable.no-effect=%s is already not exchangeable
 commands.ee3.run-tests.usage=/ee3 run-tests <file-name>
 commands.ee3.run-tests.success=Executed test file '%s', check server log for results
 commands.ee3.run-tests.notfound=Test file '%s' was not found!
-commands.ee3.admin.usage=/ee3 admin
+commands.ee3.run-tests.dir-notfound=Test directory was not found!
 
 # Tooltips
 tooltip.ee3:belongsTo=Belongs to %s

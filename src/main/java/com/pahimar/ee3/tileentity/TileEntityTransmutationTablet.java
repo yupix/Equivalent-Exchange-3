@@ -1,5 +1,8 @@
 package com.pahimar.ee3.tileentity;
 
+import java.util.Collections;
+import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -9,14 +12,14 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.pahimar.ee3.api.blacklist.BlacklistRegistryProxy;
 import com.pahimar.ee3.api.exchange.EnergyValue;
 import com.pahimar.ee3.api.exchange.EnergyValueRegistryProxy;
 import com.pahimar.ee3.block.BlockAshInfusedStoneSlab;
-import com.pahimar.ee3.exchange.EnergyValueRegistry;
 import com.pahimar.ee3.item.ItemAlchenomicon;
 import com.pahimar.ee3.item.ItemMiniumStone;
 import com.pahimar.ee3.item.ItemPhilosophersStone;
-import com.pahimar.ee3.knowledge.AbilityRegistry;
+import com.pahimar.ee3.knowledge.PlayerKnowledge;
 import com.pahimar.ee3.network.PacketHandler;
 import com.pahimar.ee3.network.message.MessageTileEntityTransmutationTablet;
 import com.pahimar.ee3.reference.Names;
@@ -38,71 +41,26 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
     public static final int STONE_INDEX = 8;
     public static final int ALCHENOMICON_INDEX = 9;
 
-    private EnergyValue storedEnergyValue;
-    private EnergyValue availableEnergyValue;
+    private EnergyValue storedEnergy, availableEnergy;
     private ForgeDirection rotation;
     private ItemStack[] inventory;
+    public PlayerKnowledge playerKnowledge;
 
     public TileEntityTransmutationTablet() {
+
         super();
         rotation = ForgeDirection.UNKNOWN;
-        availableEnergyValue = new EnergyValue(0);
-        storedEnergyValue = new EnergyValue(0);
+        availableEnergy = new EnergyValue(0);
+        storedEnergy = new EnergyValue(0);
         inventory = new ItemStack[INVENTORY_SIZE];
     }
 
-    public EnergyValue getAvailableEnergyValue() {
-        return availableEnergyValue;
+    public EnergyValue getAvailableEnergy() {
+        return availableEnergy;
     }
 
-    public EnergyValue getStoredEnergyValue() {
-        return storedEnergyValue;
-    }
-
-    public void consumeInventoryForEnergyValue(ItemStack outputItemStack) {
-        EnergyValue outputEnergyValue = EnergyValueRegistryProxy.getEnergyValue(outputItemStack);
-
-        /**
-         * Algorithm:
-         *
-         * 1) Check the Stone slot, and attempt to take EMC out of the stone there (til 0) 2) Search the inventory for
-         * items that will most make up the difference, decrement them and consume their EMC 3) Repeat 2 until Stored
-         * EMC > outputItemStack EMC 4) Profit
-         */
-
-        if (this.storedEnergyValue.compareTo(outputEnergyValue) >= 0) {
-            this.storedEnergyValue = new EnergyValue(this.storedEnergyValue.getValue() - outputEnergyValue.getValue());
-        } else {
-            while (this.storedEnergyValue.compareTo(outputEnergyValue) < 0
-                    && this.availableEnergyValue.compareTo(outputEnergyValue) >= 0) {
-                for (int i = 0; i < STONE_INDEX; i++) {
-                    ItemStack stackInSlot = getStackInSlot(i);
-                    if (stackInSlot != null && EnergyValueRegistryProxy.hasEnergyValue(stackInSlot)) {
-                        this.storedEnergyValue = new EnergyValue(
-                                this.storedEnergyValue.getValue()
-                                        + EnergyValueRegistryProxy.getEnergyValue(stackInSlot).getValue());
-                        decrStackSize(i, 1);
-                    }
-                }
-            }
-
-            if (this.storedEnergyValue.getValue() >= outputEnergyValue.getValue()) {
-                this.storedEnergyValue = new EnergyValue(
-                        this.storedEnergyValue.getValue() - outputEnergyValue.getValue());
-            }
-        }
-
-        updateEnergyValueFromInventory();
-    }
-
-    public void updateEnergyValueFromInventory() {
-        float newEnergyValue = storedEnergyValue.getValue();
-        for (int i = 0; i <= STONE_INDEX; i++) {
-            if (inventory[i] != null && EnergyValueRegistryProxy.hasEnergyValue(inventory[i])) {
-                newEnergyValue += EnergyValueRegistryProxy.getEnergyValueForStack(inventory[i]).getValue();
-            }
-        }
-        this.availableEnergyValue = new EnergyValue(newEnergyValue);
+    public EnergyValue getStoredEnergy() {
+        return storedEnergy;
     }
 
     public ForgeDirection getRotation() {
@@ -113,6 +71,72 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
         this.rotation = rotation;
     }
 
+    public Set<ItemStack> getPlayerKnowledge() {
+
+        if (playerKnowledge != null) {
+            return playerKnowledge.getKnownItemStacks();
+        } else {
+            return Collections.emptySet();
+        }
+    }
+
+    public void handlePlayerKnowledgeUpdate(PlayerKnowledge playerKnowledge) {
+        this.playerKnowledge = playerKnowledge;
+    }
+
+    /**
+     * https://github.com/pahimar/Equivalent-Exchange-3/issues/1062
+     */
+    public void consumeInventoryForEnergyValue(ItemStack outputItemStack) {
+
+        EnergyValue outputEnergyValue = EnergyValueRegistryProxy.getEnergyValueForStack(outputItemStack);
+
+        /**
+         * Algorithm:
+         *
+         * 1) Check the Stone slot, and attempt to take EMC out of the stone there (til 0) 2) Search the inventory for
+         * items that will most make up the difference, decrement them and consume their EMC 3) Repeat 2 until Stored
+         * EMC > outputItemStack EMC 4) Profit
+         */
+
+        if (this.storedEnergy.compareTo(outputEnergyValue) >= 0) {
+            this.storedEnergy = new EnergyValue(this.storedEnergy.getValue() - outputEnergyValue.getValue());
+        } else {
+
+            while (this.storedEnergy.compareTo(outputEnergyValue) < 0
+                    && this.availableEnergy.compareTo(outputEnergyValue) >= 0) {
+
+                for (int i = 0; i < STONE_INDEX; i++) {
+
+                    ItemStack stackInSlot = getStackInSlot(i);
+                    if (stackInSlot != null && EnergyValueRegistryProxy.hasEnergyValue(stackInSlot)) {
+                        this.storedEnergy = new EnergyValue(
+                                this.storedEnergy.getValue()
+                                        + EnergyValueRegistryProxy.getEnergyValue(stackInSlot).getValue());
+                        decrStackSize(i, 1);
+                    }
+                }
+            }
+
+            if (this.storedEnergy.getValue() >= outputEnergyValue.getValue()) {
+                this.storedEnergy = new EnergyValue(this.storedEnergy.getValue() - outputEnergyValue.getValue());
+            }
+        }
+
+        updateEnergyValueFromInventory();
+    }
+
+    public void updateEnergyValueFromInventory() {
+
+        float newEnergyValue = storedEnergy.getValue();
+        for (int i = 0; i <= STONE_INDEX; i++) {
+            if (inventory[i] != null && EnergyValueRegistryProxy.hasEnergyValue(inventory[i])) {
+                newEnergyValue += EnergyValueRegistryProxy.getEnergyValueForStack(inventory[i]).getValue();
+            }
+        }
+        this.availableEnergy = new EnergyValue(newEnergyValue);
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
@@ -121,6 +145,7 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
     }
 
     public boolean isStructureValid() {
+
         return ((worldObj.getBlock(xCoord - 1, yCoord, zCoord - 1) instanceof BlockAshInfusedStoneSlab
                 && worldObj.getBlockMetadata(xCoord - 1, yCoord, zCoord - 1) == 1)
                 && (worldObj.getBlock(xCoord, yCoord, zCoord - 1) instanceof BlockAshInfusedStoneSlab
@@ -141,6 +166,7 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
 
     @Override
     public void updateEntity() {
+
         super.updateEntity();
         updateEnergyValueFromInventory();
     }
@@ -152,6 +178,7 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
+
         super.readFromNBT(nbtTagCompound);
         rotation = ForgeDirection.getOrientation(nbtTagCompound.getInteger("rotation"));
 
@@ -166,16 +193,17 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
             }
         }
 
-        NBTTagCompound energyValueTagCompound = nbtTagCompound.getCompoundTag("storedEnergyValue");
+        NBTTagCompound energyValueTagCompound = nbtTagCompound.getCompoundTag("storedEnergy");
         if (!energyValueTagCompound.hasNoTags()) {
-            storedEnergyValue = EnergyValue.loadEnergyValueFromNBT(energyValueTagCompound);
+            storedEnergy = EnergyValue.loadEnergyValueFromNBT(energyValueTagCompound);
         } else {
-            storedEnergyValue = new EnergyValue(0);
+            storedEnergy = new EnergyValue(0);
         }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound) {
+
         super.writeToNBT(nbtTagCompound);
         nbtTagCompound.setInteger("rotation", rotation.ordinal());
 
@@ -192,10 +220,10 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
         nbtTagCompound.setTag(Names.NBT.ITEMS, tagList);
 
         NBTTagCompound energyValueTagCompound = new NBTTagCompound();
-        if (storedEnergyValue != null) {
-            storedEnergyValue.writeToNBT(energyValueTagCompound);
+        if (storedEnergy != null) {
+            storedEnergy.writeToNBT(energyValueTagCompound);
         }
-        nbtTagCompound.setTag("storedEnergyValue", energyValueTagCompound);
+        nbtTagCompound.setTag("storedEnergy", energyValueTagCompound);
     }
 
     @Override
@@ -263,7 +291,7 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
-        return this.worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
+        return this.worldObj.getTileEntity(xCoord, yCoord, zCoord) == this && isStructureValid()
                 && entityPlayer.getDistanceSq((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D)
                         <= 64D;
     }
@@ -280,8 +308,8 @@ public class TileEntityTransmutationTablet extends TileEntityEE implements ISide
 
     @Override
     public boolean isItemValidForSlot(int slotIndex, ItemStack itemStack) {
-        if (slotIndex < STONE_INDEX && EnergyValueRegistry.getInstance().hasEnergyValue(itemStack)
-                && AbilityRegistry.getInstance().isRecoverable(itemStack)) {
+        if (slotIndex < STONE_INDEX && EnergyValueRegistryProxy.hasEnergyValue(itemStack)
+                && BlacklistRegistryProxy.isExchangeable(itemStack)) {
             return true;
         } else if (slotIndex == STONE_INDEX && (itemStack.getItem() instanceof ItemMiniumStone
                 || itemStack.getItem() instanceof ItemPhilosophersStone)) {

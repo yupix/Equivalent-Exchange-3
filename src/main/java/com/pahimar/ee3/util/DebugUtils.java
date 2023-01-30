@@ -18,7 +18,7 @@ public class DebugUtils {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(String.format("Ore: %s, ItemStacks: ", oreName));
             for (ItemStack itemStack : OreDictionary.getOres(oreName)) {
-                stringBuilder.append(String.format("%s ", ItemHelper.toString(itemStack)));
+                stringBuilder.append(String.format("%s ", ItemStackUtils.toString(itemStack)));
             }
             LogHelper.info(stringBuilder.toString());
         }

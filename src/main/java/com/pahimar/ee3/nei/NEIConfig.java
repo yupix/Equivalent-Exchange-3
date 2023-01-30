@@ -23,13 +23,9 @@ public class NEIConfig implements IConfigureNEI {
     @Override
     public void loadConfig() {
         AludelRecipeHandler aludelRecipeHandler = new AludelRecipeHandler();
-        CalcinationHandler calcinationHandler = new CalcinationHandler();
 
         API.registerRecipeHandler(aludelRecipeHandler);
         API.registerUsageHandler(aludelRecipeHandler);
-
-        API.registerRecipeHandler(calcinationHandler);
-        API.registerUsageHandler(calcinationHandler);
 
         API.hideItem(new ItemStack(ModBlocks.transmutationTablet));
         API.hideItem(new ItemStack(ModBlocks.dummyArray));

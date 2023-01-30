@@ -7,7 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
+import com.pahimar.ee3.api.knowledge.PlayerKnowledgeRegistryProxy;
 import com.pahimar.ee3.reference.Messages;
 import com.pahimar.ee3.reference.Names;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -37,7 +37,7 @@ public class CommandPlayerForgetEverything extends CommandBase {
             EntityPlayer entityPlayer = getPlayer(commandSender, args[1]);
 
             if (entityPlayer != null) {
-                TransmutationKnowledgeRegistryProxy.makePlayerForgetEverything(entityPlayer);
+                PlayerKnowledgeRegistryProxy.makePlayerForgetAll(entityPlayer);
                 func_152373_a(
                         commandSender,
                         this,

@@ -8,8 +8,8 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.pahimar.ee3.api.knowledge.TransmutationKnowledgeRegistryProxy;
-import com.pahimar.ee3.knowledge.AbilityRegistry;
+import com.pahimar.ee3.api.blacklist.BlacklistRegistryProxy;
+import com.pahimar.ee3.api.knowledge.PlayerKnowledgeRegistryProxy;
 import com.pahimar.ee3.reference.Messages;
 import com.pahimar.ee3.reference.Names;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -42,8 +42,8 @@ public class CommandPlayerLearnCurrentItem extends CommandBase {
                 ItemStack itemStack = ((EntityPlayer) commandSender).getCurrentEquippedItem();
 
                 if (itemStack != null) {
-                    if (AbilityRegistry.getInstance().isLearnable(itemStack)) {
-                        TransmutationKnowledgeRegistryProxy.teachPlayer(entityPlayer, itemStack);
+                    if (BlacklistRegistryProxy.isLearnable(itemStack)) {
+                        PlayerKnowledgeRegistryProxy.teachPlayer(entityPlayer, itemStack);
                         func_152373_a(
                                 commandSender,
                                 this,

@@ -37,6 +37,7 @@ public class InventoryAlchemicalBag implements IInventory, INBTTaggable {
     }
 
     public void onGuiSaved(EntityPlayer entityPlayer) {
+
         parentItemStack = findParentItemStack(entityPlayer);
 
         if (parentItemStack != null) {
@@ -45,11 +46,15 @@ public class InventoryAlchemicalBag implements IInventory, INBTTaggable {
     }
 
     public ItemStack findParentItemStack(EntityPlayer entityPlayer) {
+
         if (NBTHelper.hasUUID(parentItemStack)) {
+
             UUID parentItemStackUUID = new UUID(
                     parentItemStack.getTagCompound().getLong(Names.NBT.UUID_MOST_SIG),
                     parentItemStack.getTagCompound().getLong(Names.NBT.UUID_LEAST_SIG));
+
             for (int i = 0; i < entityPlayer.inventory.getSizeInventory(); i++) {
+
                 ItemStack itemStack = entityPlayer.inventory.getStackInSlot(i);
 
                 if (NBTHelper.hasUUID(itemStack)) {
@@ -73,9 +78,11 @@ public class InventoryAlchemicalBag implements IInventory, INBTTaggable {
     }
 
     public void save() {
+
         NBTTagCompound nbtTagCompound = parentItemStack.getTagCompound();
 
         if (nbtTagCompound == null) {
+
             nbtTagCompound = new NBTTagCompound();
 
             UUID uuid = UUID.randomUUID();

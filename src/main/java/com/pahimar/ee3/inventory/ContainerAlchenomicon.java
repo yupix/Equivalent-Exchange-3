@@ -3,20 +3,19 @@ package com.pahimar.ee3.inventory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import com.pahimar.ee3.api.knowledge.PlayerKnowledgeRegistryProxy;
 import com.pahimar.ee3.inventory.element.IElementButtonHandler;
 import com.pahimar.ee3.inventory.element.IElementTextFieldHandler;
 import com.pahimar.ee3.item.ItemAlchenomicon;
-import com.pahimar.ee3.knowledge.TransmutationKnowledgeRegistry;
 import com.pahimar.ee3.reference.Comparators;
 import com.pahimar.ee3.util.FilterUtils;
-import com.pahimar.ee3.util.ItemHelper;
+import com.pahimar.ee3.util.ItemStackUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,12 +31,11 @@ public class ContainerAlchenomicon extends ContainerEE implements IElementButton
     private final static int MAX_COLUMN_INDEX = 5;
 
     public ContainerAlchenomicon(EntityPlayer entityPlayer, ItemStack itemStack) {
-        TreeSet<ItemStack> knownTransmutations = new TreeSet<ItemStack>(Comparators.displayNameComparator);
+        TreeSet<ItemStack> knownTransmutations = new TreeSet<>(Comparators.DISPLAY_NAME_COMPARATOR);
 
-        if (itemStack.getItem() instanceof ItemAlchenomicon && ItemHelper.hasOwnerUUID(itemStack)) {
-            UUID ownerUUID = ItemHelper.getOwnerUUID(itemStack);
-            knownTransmutations
-                    .addAll(TransmutationKnowledgeRegistry.getInstance().getPlayersKnownTransmutations(ownerUUID));
+        if (itemStack.getItem() instanceof ItemAlchenomicon && ItemStackUtils.getOwnerName(itemStack) != null) {
+            String playerName = ItemStackUtils.getOwnerName(itemStack);
+            knownTransmutations.addAll(PlayerKnowledgeRegistryProxy.getKnownItemStacks(playerName));
         }
 
         inventoryAlchenomicon = new InventoryAlchenomicon(knownTransmutations);
@@ -161,11 +159,12 @@ public class ContainerAlchenomicon extends ContainerEE implements IElementButton
         this.requiresUpdate = true;
         boolean shouldUpdateInventory = false;
         ItemStack[] newInventory = new ItemStack[80];
-        List<ItemStack> filteredList = new ArrayList(
-                FilterUtils.filterByNameContains(
+        List<ItemStack> filteredList = new ArrayList<>(
+                FilterUtils.filterByDisplayName(
                         inventoryAlchenomicon.getKnownTransmutations(),
                         searchTerm,
-                        Comparators.displayNameComparator));
+                        FilterUtils.NameFilterType.CONTAINS,
+                        Comparators.DISPLAY_NAME_COMPARATOR));
 
         maxPageOffset = filteredList.size() / 80;
         if (pageOffset > maxPageOffset) {

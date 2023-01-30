@@ -54,19 +54,19 @@ public final class Messages {
                 + Names.Commands.SET_ENERGY_VALUE_CURRENT_ITEM
                 + ".success";
 
+        public static final String REGEN_ENERGY_VALUES_USAGE = COMMAND_PREFIX + Names.Commands.REGEN_ENERGY_VALUES
+                + ".usage";
+        public static final String REGEN_ENERGY_VALUES_SUCCESS = COMMAND_PREFIX + Names.Commands.REGEN_ENERGY_VALUES
+                + ".success";
+        public static final String REGEN_ENERGY_VALUES_DENIED = COMMAND_PREFIX + Names.Commands.REGEN_ENERGY_VALUES
+                + ".denied";
+
         public static final String SYNC_ENERGY_VALUES_USAGE = COMMAND_PREFIX + Names.Commands.SYNC_ENERGY_VALUES
                 + ".usage";
         public static final String SYNC_ENERGY_VALUES_SUCCESS = COMMAND_PREFIX + Names.Commands.SYNC_ENERGY_VALUES
                 + ".success";
         public static final String SYNC_ENERGY_VALUES_DENIED = COMMAND_PREFIX + Names.Commands.SYNC_ENERGY_VALUES
                 + ".denied";
-
-        public static final String PLAYER_LEARN_EVERYTHING_USAGE = COMMAND_PREFIX
-                + Names.Commands.PLAYER_LEARN_EVERYTHING
-                + ".usage";
-        public static final String PLAYER_LEARN_EVERYTHING_SUCCESS = COMMAND_PREFIX
-                + Names.Commands.PLAYER_LEARN_EVERYTHING
-                + ".success";
 
         public static final String PLAYER_LEARN_ITEM_USAGE = COMMAND_PREFIX + Names.Commands.PLAYER_LEARN_ITEM
                 + ".usage";
@@ -99,48 +99,19 @@ public final class Messages {
                 + Names.Commands.PLAYER_FORGET_CURRENT_ITEM
                 + ".success";
 
-        public static final String TEMPLATE_LEARN_EVERYTHING_USAGE = COMMAND_PREFIX
-                + Names.Commands.TEMPLATE_LEARN_EVERYTHING
-                + ".usage";
-        public static final String TEMPLATE_LEARN_EVERYTHING_SUCCESS = COMMAND_PREFIX
-                + Names.Commands.TEMPLATE_LEARN_EVERYTHING
-                + ".success";
-
-        public static final String TEMPLATE_LEARN_ITEM_USAGE = COMMAND_PREFIX + Names.Commands.TEMPLATE_LEARN_ITEM
-                + ".usage";
-        public static final String TEMPLATE_LEARN_ITEM_SUCCESS = COMMAND_PREFIX + Names.Commands.TEMPLATE_LEARN_ITEM
-                + ".success";
-
-        public static final String TEMPLATE_LEARN_CURRENT_ITEM_USAGE = COMMAND_PREFIX
-                + Names.Commands.TEMPLATE_LEARN_CURRENT_ITEM
-                + ".usage";
-        public static final String TEMPLATE_LEARN_CURRENT_ITEM_SUCCESS = COMMAND_PREFIX
-                + Names.Commands.TEMPLATE_LEARN_CURRENT_ITEM
-                + ".success";
-
-        public static final String TEMPLATE_FORGET_EVERYTHING_USAGE = COMMAND_PREFIX
-                + Names.Commands.TEMPLATE_FORGET_EVERYTHING
-                + ".usage";
-        public static final String TEMPLATE_FORGET_EVERYTHING_SUCCESS = COMMAND_PREFIX
-                + Names.Commands.TEMPLATE_FORGET_EVERYTHING
-                + ".success";
-
-        public static final String TEMPLATE_FORGET_ITEM_USAGE = COMMAND_PREFIX + Names.Commands.TEMPLATE_FORGET_ITEM
-                + ".usage";
-        public static final String TEMPLATE_FORGET_ITEM_SUCCESS = COMMAND_PREFIX + Names.Commands.TEMPLATE_FORGET_ITEM
-                + ".success";
-
-        public static final String TEMPLATE_FORGET_CURRENT_ITEM_USAGE = COMMAND_PREFIX
-                + Names.Commands.TEMPLATE_FORGET_CURRENT_ITEM
-                + ".usage";
-        public static final String TEMPLATE_FORGET_CURRENT_ITEM_SUCCESS = COMMAND_PREFIX
-                + Names.Commands.TEMPLATE_FORGET_CURRENT_ITEM
-                + ".success";
-
         public static final String SET_ITEM_LEARNABLE_USAGE = COMMAND_PREFIX + Names.Commands.SET_ITEM_LEARNABLE
                 + ".usage";
         public static final String SET_ITEM_LEARNABLE_SUCCESS = COMMAND_PREFIX + Names.Commands.SET_ITEM_LEARNABLE
                 + ".success";
+
+        public static final String SET_CURRENT_ITEM_LEARNABLE_USAGE = COMMAND_PREFIX + Names.Commands.SET_ITEM_LEARNABLE
+                + ".usage";
+        public static final String SET_CURRENT_ITEM_LEARNABLE_SUCCESS = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_LEARNABLE
+                + ".success";
+        public static final String SET_CURRENT_ITEM_LEARNABLE_NO_EFFECT = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_LEARNABLE
+                + ".no-effect";
 
         public static final String SET_ITEM_NOT_LEARNABLE_USAGE = COMMAND_PREFIX + Names.Commands.SET_ITEM_NOT_LEARNABLE
                 + ".usage";
@@ -148,10 +119,30 @@ public final class Messages {
                 + Names.Commands.SET_ITEM_NOT_LEARNABLE
                 + ".success";
 
+        public static final String SET_CURRENT_ITEM_NOT_LEARNABLE_USAGE = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_NOT_LEARNABLE
+                + ".usage";
+        public static final String SET_CURRENT_ITEM_NOT_LEARNABLE_SUCCESS = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_NOT_LEARNABLE
+                + ".success";
+        public static final String SET_CURRENT_ITEM_NOT_LEARNABLE_NO_EFFECT = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_NOT_LEARNABLE
+                + ".no-effect";
+
         public static final String SET_ITEM_RECOVERABLE_USAGE = COMMAND_PREFIX + Names.Commands.SET_ITEM_RECOVERABLE
                 + ".usage";
         public static final String SET_ITEM_RECOVERABLE_SUCCESS = COMMAND_PREFIX + Names.Commands.SET_ITEM_RECOVERABLE
                 + ".success";
+
+        public static final String SET_CURRENT_ITEM_RECOVERABLE_USAGE = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_RECOVERABLE
+                + ".usage";
+        public static final String SET_CURRENT_ITEM_RECOVERABLE_SUCCESS = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_RECOVERABLE
+                + ".success";
+        public static final String SET_CURRENT_ITEM_RECOVERABLE_NO_EFFECT = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_RECOVERABLE
+                + ".no-effect";
 
         public static final String SET_ITEM_NOT_RECOVERABLE_USAGE = COMMAND_PREFIX
                 + Names.Commands.SET_ITEM_NOT_RECOVERABLE
@@ -160,29 +151,25 @@ public final class Messages {
                 + Names.Commands.SET_ITEM_NOT_RECOVERABLE
                 + ".success";
 
+        public static final String SET_CURRENT_ITEM_NOT_RECOVERABLE_USAGE = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_NOT_RECOVERABLE
+                + ".usage";
+        public static final String SET_CURRENT_ITEM_NOT_RECOVERABLE_SUCCESS = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_NOT_RECOVERABLE
+                + ".success";
+        public static final String SET_CURRENT_ITEM_NOT_RECOVERABLE_NO_EFFECT = COMMAND_PREFIX
+                + Names.Commands.SET_ITEM_NOT_RECOVERABLE
+                + ".no-effect";
+
         public static final String RUN_TEST_USAGE = COMMAND_PREFIX + Names.Commands.RUN_TEST + ".usage";
         public static final String RUN_TESTS_SUCCESS = COMMAND_PREFIX + Names.Commands.RUN_TEST + ".success";
         public static final String RUN_TESTS_NOT_FOUND = COMMAND_PREFIX + Names.Commands.RUN_TEST + ".notfound";
+        public static final String RUN_TESTS_DIR_NOT_FOUND = COMMAND_PREFIX + Names.Commands.RUN_TEST + ".dir-notfound";
 
         public static final String ADMIN_USAGE = COMMAND_PREFIX + Names.Commands.ADMIN_PANEL + ".usage";
     }
 
     public static final class Configuration {
 
-        public static final String GENERAL_SYNC_THRESHOLD = "sync.threshold";
-        public static final String GENERAL_SYNC_THRESHOLD_LABEL = "general.sync.threshold.label";
-        public static final String GENERAL_SYNC_THRESHOLD_COMMENT = "general.sync.threshold.comment";
-
-        public static final String SOUND_MODE = "soundMode";
-        public static final String SOUND_MODE_LABEL = "general.sound.soundMode.label";
-        public static final String SOUND_MODE_COMMENT = "general.sound.soundMode.comment";
-
-        public static final String ABILITIES_ONLY_LOAD_FILE = "abilities.onlyLoadFile";
-        public static final String ABILITIES_ONLY_LOAD_FILE_LABEL = "general.abilities.onlyLoadFile.label";
-        public static final String ABILITIES_ONLY_LOAD_FILE_COMMENT = "general.abilities.onlyLoadFile.comment";
-
-        public static final String REGENERATE_ENERGYVALUES_WHEN = "energyvalues.regenerateEnergyValuesWhen";
-        public static final String REGENERATE_ENERGYVALUES_WHEN_LABEL = "general.energyvalues.regenerateEnergyValuesWhen.label";
-        public static final String REGENERATE_ENERGYVALUES_WHEN_COMMENT = "general.energyvalues.regenerateEnergyValuesWhen.comment";
     }
 }

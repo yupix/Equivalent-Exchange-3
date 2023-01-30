@@ -14,7 +14,7 @@ import com.pahimar.ee3.reference.GUIs;
 import com.pahimar.ee3.reference.Messages;
 import com.pahimar.ee3.reference.Names;
 import com.pahimar.ee3.util.IOwnable;
-import com.pahimar.ee3.util.ItemHelper;
+import com.pahimar.ee3.util.ItemStackUtils;
 
 public class ItemAlchenomicon extends ItemEE implements IOwnable, IEnergyValueProvider {
 
@@ -31,8 +31,8 @@ public class ItemAlchenomicon extends ItemEE implements IOwnable, IEnergyValuePr
     @Override
     public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer entityPlayer) {
         if (!world.isRemote) {
-            if (!ItemHelper.hasOwnerUUID(itemStack)) {
-                ItemHelper.setOwner(itemStack, entityPlayer);
+            if (ItemStackUtils.getOwnerUUID(itemStack) == null) {
+                ItemStackUtils.setOwner(itemStack, entityPlayer);
                 entityPlayer.addChatComponentMessage(
                         new ChatComponentTranslation(
                                 Messages.OWNER_SET_TO_SELF,

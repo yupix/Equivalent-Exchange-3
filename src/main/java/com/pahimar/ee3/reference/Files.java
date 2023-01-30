@@ -2,45 +2,73 @@ package com.pahimar.ee3.reference;
 
 import java.io.File;
 
+import com.pahimar.ee3.blacklist.BlacklistRegistry;
+import com.pahimar.ee3.exchange.EnergyValueRegistry;
+import com.pahimar.ee3.knowledge.PlayerKnowledgeRegistry;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class Files {
 
-    public static final String PRE_CALCULATION_ENERGY_VALUES = "pre-calculation-energy-values.json";
-    public static final String POST_CALCULATION_ENERGY_VALUES = "post-calculation-energy-values.json";
-    public static final String TEMPLATE_JSON_FILE = "template.json";
-    public static final String ABILITIES_JSON_FILE = "abilities.json";
-    public static final String STATIC_ENERGY_VALUES_JSON = "energy-values.json.gz";
+    public static File globalDataDirectory;
+    public static File globalTestDirectory;
+    public static File playerDataDirectory;
 
-    public static class Global {
+    private static final String ENERGY_VALUES_JSON_FILENAME = "energy-values.json";
+    private static final String PRE_CALCULATION_ENERGY_VALUES_FILENAME = "pre-calculation-energy-values.json";
+    private static final String POST_CALCULATION_ENERGY_VALUES_FILENAME = "post-calculation-energy-values.json";
 
-        public static File dataDirectory;
+    public static final String TEMPLATE_PLAYER_KNOWLEDGE_FILENAME = "template-player-knowledge.json";
 
-        public static File preCalcluationEnergyValueFile;
-        public static File postCalcluationEnergyValueFile;
+    public static final String KNOWLEDGE_BLACKLIST_FILENAME = "knowledge-blacklist.json";
+    public static final String EXCHANGE_BLACKLIST_FILENAME = "exchange-blacklist.json";
 
-        public static File abilityFile;
+    public static void init(FMLPreInitializationEvent event) {
 
-        public static File templateTransmutationKnowledgeFile;
+        globalDataDirectory = new File(
+                event.getModConfigurationDirectory().getParentFile(),
+                "data" + File.separator + Reference.LOWERCASE_MOD_ID);
+        globalTestDirectory = new File(globalDataDirectory, "tests");
+        globalTestDirectory.mkdirs();
 
-        public static void init(FMLPreInitializationEvent event) {
-            dataDirectory = new File(
-                    event.getModConfigurationDirectory().getParentFile(),
-                    "data" + File.separator + Reference.LOWERCASE_MOD_ID);
-            dataDirectory.mkdirs();
+        EnergyValueRegistry.energyValuesDirectory = new File(globalDataDirectory, "energy-values");
+        EnergyValueRegistry.energyValuesDirectory.mkdirs();
+        EnergyValueRegistry.energyValuesFile = new File(
+                EnergyValueRegistry.energyValuesDirectory,
+                ENERGY_VALUES_JSON_FILENAME);
+        EnergyValueRegistry.preCalculationValuesFile = new File(
+                EnergyValueRegistry.energyValuesDirectory,
+                PRE_CALCULATION_ENERGY_VALUES_FILENAME);
+        EnergyValueRegistry.postCalculationValuesFile = new File(
+                EnergyValueRegistry.energyValuesDirectory,
+                POST_CALCULATION_ENERGY_VALUES_FILENAME);
 
-            File energyValueDataDirectory = new File(dataDirectory, "energyvalues");
-            energyValueDataDirectory.mkdirs();
-            preCalcluationEnergyValueFile = new File(energyValueDataDirectory, PRE_CALCULATION_ENERGY_VALUES);
-            postCalcluationEnergyValueFile = new File(energyValueDataDirectory, POST_CALCULATION_ENERGY_VALUES);
+        File templatePlayerKnowledgeDirectory = new File(
+                globalDataDirectory,
+                "knowledge" + File.separator + "transmutation");
+        templatePlayerKnowledgeDirectory.mkdirs();
+        PlayerKnowledgeRegistry.templatePlayerKnowledgeFile = new File(
+                templatePlayerKnowledgeDirectory,
+                TEMPLATE_PLAYER_KNOWLEDGE_FILENAME);
 
-            File abilityDataDirectory = new File(dataDirectory, "abilities");
-            abilityDataDirectory.mkdirs();
-            abilityFile = new File(abilityDataDirectory, ABILITIES_JSON_FILE);
+        BlacklistRegistry.knowledgeBlacklistFile = new File(
+                globalDataDirectory,
+                "blacklist" + File.separator + KNOWLEDGE_BLACKLIST_FILENAME);
+        BlacklistRegistry.exchangeBlacklistFile = new File(
+                globalDataDirectory,
+                "blacklist" + File.separator + EXCHANGE_BLACKLIST_FILENAME);
+    }
 
-            File knowledgeDataDirectory = new File(dataDirectory, "knowledge");
-            knowledgeDataDirectory.mkdirs();
-            templateTransmutationKnowledgeFile = new File(knowledgeDataDirectory, TEMPLATE_JSON_FILE);
-        }
+    /**
+     * Updates the references to the instance specific EE3 data directories, creating them if they don't already exist
+     */
+    public static void updateFileReferences() {
+
+        playerDataDirectory = new File(
+                FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().getSaveHandler()
+                        .getWorldDirectory(),
+                "playerdata" + File.separator + Reference.LOWERCASE_MOD_ID);
+        playerDataDirectory.mkdirs();
     }
 }

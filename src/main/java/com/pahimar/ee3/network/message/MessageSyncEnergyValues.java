@@ -1,17 +1,14 @@
 package com.pahimar.ee3.network.message;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Map;
-import java.util.TreeMap;
 
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonParseException;
 import com.pahimar.ee3.api.exchange.EnergyValue;
 import com.pahimar.ee3.exchange.EnergyValueRegistry;
-import com.pahimar.ee3.exchange.EnergyValueStackMapping;
 import com.pahimar.ee3.exchange.WrappedStack;
 import com.pahimar.ee3.util.CompressionHelper;
 import com.pahimar.ee3.util.LogHelper;
+import com.pahimar.ee3.util.SerializationHelper;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -20,12 +17,10 @@ import io.netty.buffer.ByteBuf;
 
 public class MessageSyncEnergyValues implements IMessage, IMessageHandler<MessageSyncEnergyValues, IMessage> {
 
-    public String jsonEnergyValueRegistry;
+    public Map<WrappedStack, EnergyValue> valueMap;
 
-    public MessageSyncEnergyValues() {}
-
-    public MessageSyncEnergyValues(EnergyValueRegistry energyValueRegistry) {
-        this.jsonEnergyValueRegistry = energyValueRegistry.toJson();
+    public MessageSyncEnergyValues() {
+        this.valueMap = EnergyValueRegistry.INSTANCE.getEnergyValues();
     }
 
     /**
@@ -35,15 +30,27 @@ public class MessageSyncEnergyValues implements IMessage, IMessageHandler<Messag
      */
     @Override
     public void fromBytes(ByteBuf buf) {
-        byte[] compressedBytes = null;
-        int readableBytes = buf.readInt();
 
-        if (readableBytes > 0) {
-            compressedBytes = buf.readBytes(readableBytes).array();
-        }
+        int compressedJsonLength = buf.readInt();
 
-        if (compressedBytes != null) {
-            this.jsonEnergyValueRegistry = CompressionHelper.decompressStringFromByteArray(compressedBytes);
+        if (compressedJsonLength != 0) {
+            byte[] compressedValueMap = buf.readBytes(compressedJsonLength).array();
+
+            if (compressedValueMap != null) {
+
+                String jsonString = CompressionHelper.decompress(compressedValueMap);
+
+                try {
+                    valueMap = SerializationHelper.GSON.fromJson(jsonString, SerializationHelper.ENERGY_VALUE_MAP_TYPE);
+                } catch (JsonParseException e) {
+                    LogHelper.warn("Failed to read energy value map from server");
+                    valueMap = null;
+                }
+            } else {
+                valueMap = null;
+            }
+        } else {
+            valueMap = null;
         }
     }
 
@@ -54,15 +61,18 @@ public class MessageSyncEnergyValues implements IMessage, IMessageHandler<Messag
      */
     @Override
     public void toBytes(ByteBuf buf) {
-        byte[] compressedBytes = null;
 
-        if (jsonEnergyValueRegistry != null) {
-            compressedBytes = CompressionHelper.compressStringToByteArray(jsonEnergyValueRegistry);
-        }
+        if (valueMap != null) {
 
-        if (compressedBytes != null) {
-            buf.writeInt(compressedBytes.length);
-            buf.writeBytes(compressedBytes);
+            byte[] compressedValueMap = CompressionHelper
+                    .compress(SerializationHelper.GSON.toJson(valueMap, SerializationHelper.ENERGY_VALUE_MAP_TYPE));
+
+            if (compressedValueMap != null) {
+                buf.writeInt(compressedValueMap.length);
+                buf.writeBytes(compressedValueMap);
+            } else {
+                buf.writeInt(0);
+            }
         } else {
             buf.writeInt(0);
         }
@@ -78,34 +88,17 @@ public class MessageSyncEnergyValues implements IMessage, IMessageHandler<Messag
      */
     @Override
     public IMessage onMessage(MessageSyncEnergyValues message, MessageContext ctx) {
-        if (message.jsonEnergyValueRegistry != null) {
-            Map<WrappedStack, EnergyValue> energyValueStackMap = new TreeMap<WrappedStack, EnergyValue>();
 
-            try {
-                JsonReader jsonReader = new JsonReader(new StringReader(message.jsonEnergyValueRegistry));
-                jsonReader.beginArray();
-                while (jsonReader.hasNext()) {
-                    EnergyValueStackMapping energyValueStackMapping = EnergyValueStackMapping.jsonSerializer
-                            .fromJson(jsonReader, EnergyValueStackMapping.class);
-                    if (energyValueStackMapping != null) {
-                        energyValueStackMap
-                                .put(energyValueStackMapping.wrappedStack, energyValueStackMapping.energyValue);
-                    }
-                }
-                jsonReader.endArray();
-                jsonReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            EnergyValueRegistry.getInstance().loadFromMap(energyValueStackMap);
+        if (message.valueMap != null) {
+            EnergyValueRegistry.INSTANCE.load(message.valueMap);
             LogHelper.info(
                     EnergyValueRegistry.ENERGY_VALUE_MARKER,
-                    "Client successfully received EnergyValues from server");
+                    "Client successfully received {} energy values from server",
+                    message.valueMap.size());
         } else {
             LogHelper.info(
                     EnergyValueRegistry.ENERGY_VALUE_MARKER,
-                    "Client failed to receive EnergyValues from server - falling back to local EnergyValues");
+                    "Client failed to receive energy values from server - falling back to local values");
         }
 
         return null;
